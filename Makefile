@@ -690,15 +690,7 @@ endif
 endif
 KBUILD_CFLAGS += $(stackp-flag)
 
-ifdef CONFIG_KCOV
-  ifeq ($(call cc-option, $(CFLAGS_KCOV)),)
-    $(warning Cannot use CONFIG_KCOV: \
-             -fsanitize-coverage=trace-pc is not supported by compiler)
-    CFLAGS_KCOV =
-  endif
-endif
-
-ifeq ($(COMPILER),clang)
+ifeq ($(cc-name),clang)
 KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
 KBUILD_CPPFLAGS += $(call cc-option,-Wno-unknown-warning-option,)
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)

@@ -622,7 +622,15 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, int-in-bool-context)
 KBUILD_CFLAGS	+= $(call cc-option,-fno-PIE)
 KBUILD_AFLAGS	+= $(call cc-option,-fno-PIE)
 
-#Custom performance optimization flags
+# Disable unused-constant-variable warnings
+KBUILD_CFLAGS   += $(call cc-disable-warning,unused-const-variable,)
+
+# Disable format-truncation warnings
+KBUILD_CFLAGS   += $(call cc-disable-warning,format-truncation,)
+
+# Needed to unbreak GCC 7.x and above
+KBUILD_CFLAGS   += $(call cc-option,-fno-store-merging,)
+
 ifneq ($(KBUILD_LOUP_CFLAGS),)
 $(info Using custom flags!!! [${KBUILD_LOUP_CFLAGS}])
 KBUILD_CFLAGS   += $(KBUILD_LOUP_CFLAGS) $(call cc-disable-warning,maybe-uninitialized,)

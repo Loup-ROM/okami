@@ -11554,6 +11554,26 @@
 		i2c3 = "/soc/i2c@78b7000";
 	};
 
+	firmware {
+
+                android {
+                        compatible = "android,firmware";
+
+                        fstab {
+                                compatible = "android,fstab";
+
+                                system {
+                                        compatible = "android,system";
+                                        dev = "/dev/block/platform/soc/7824900.sdhci/by-name/system";
+                                        fsmgr_flags = "wait";
+                                        mnt_flags = "ro,barrier=1,discard";
+                                        status = "ok";
+                                        type = "ext4";
+                                };
+                        };
+                };
+        };	
+
 	memory {
 		device_type = "memory";
 		reg = <0x0 0x0 0x0 0x0>;
@@ -11572,7 +11592,7 @@
 
 		modem_region@0 {
 			compatible = "removed-dma-pool";
-			no-map-fixup;
+			no-map;
 			reg = <0x0 0x86800000 0x0 0x6a00000>;
 			linux,phandle = <0x118>;
 			phandle = <0x118>;

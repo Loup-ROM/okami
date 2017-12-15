@@ -8,9 +8,9 @@ echo ""
 #echo "> Copiando ramdisk a arch/arm64/boot"
 #cp ../generated_boot_img/initramfs.cpio.gz arch/arm64/boot/boot.img-ramdisk.cpio.gz
 echo "> Abriendo archivo de configuracion"
-CFLAGS="-mtune=cortex-a53 -march=armv8-a -mcpu=cortex-a53 -O2" ARCH=arm64 CROSS_COMPILE=../aarch64-linux-android-4.9/bin/aarch64-linux-android- make menuconfig
+CFLAGS="-mtune=cortex-a53 -march=armv8-a -mcpu=cortex-a53 -O2" ARCH=arm64 CROSS_COMPILE=~/CAF/aarch64-linux-android-4.9/bin/aarch64-linux-android- make menuconfig
 echo "> Iniciando compilacion del kernel usando .config"
-CFLAGS="-mtune=cortex-a53 -march=armv8-a -mcpu=cortex-a53 -O2" ARCH=arm64 CROSS_COMPILE=../aarch64-linux-android-4.9/bin/aarch64-linux-android- make -j4
+CFLAGS="-mtune=cortex-a53 -march=armv8-a -mcpu=cortex-a53 -O2" ARCH=arm64 CROSS_COMPILE=~/CAF/aarch64-linux-android-4.9/bin/aarch64-linux-android- make -j4
 echo ""
 #echo "> Eliminando boot.img viejo"
 #rm arch/arm64/boot/boot.img
@@ -24,5 +24,5 @@ echo ""
 #echo "> COPIANDO boot.img a /media/psf/Home/Desktop/"
 #cp arch/arm64/boot/boot.img /media/psf/Home/Desktop/.
 
-./../AnyKernel2/build.sh
+~/CAF/AnyKernel2/build.sh
 echo "WAAAAAAAF IS DONE"

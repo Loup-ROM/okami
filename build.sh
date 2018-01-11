@@ -49,7 +49,7 @@ then
 fi
 
 # Start menuconfig
-echo -e "\n> Opening .config file..."
+echo -e "> Opening .config file...\n"
 ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make menuconfig
 
 echo -e "> Starting kernel compilation using .config file...\n"

@@ -1,28 +1,77 @@
 #!/bin/bash
-echo "WAFF WAFF WAFF WAFF WAFF WAFF WAFF WAFF"
-echo "########### LOBO UTILIDADES ###########"
-echo "WAFF WAFF WAFF WAFF WAFF WAFF WAFF WAFF"
-echo ""
-#echo "> Copiando archivo de configuracion"
-#cp ../boot_miui_official/msm8940_defconfig .config
-#echo "> Copiando ramdisk a arch/arm64/boot"
-#cp ../generated_boot_img/initramfs.cpio.gz arch/arm64/boot/boot.img-ramdisk.cpio.gz
-echo "> Abriendo archivo de configuracion"
-CFLAGS="-mtune=cortex-a53 -march=armv8-a -mcpu=cortex-a53 -O2" ARCH=arm64 CROSS_COMPILE=~/CAF/aarch64-linux-android-4.9/bin/aarch64-linux-android- make menuconfig
-echo "> Iniciando compilacion del kernel usando .config"
-CFLAGS="-mtune=cortex-a53 -march=armv8-a -mcpu=cortex-a53 -O2" ARCH=arm64 CROSS_COMPILE=~/CAF/aarch64-linux-android-4.9/bin/aarch64-linux-android- make -j4
-echo ""
-#echo "> Eliminando boot.img viejo"
-#rm arch/arm64/boot/boot.img
-#echo "> EMPAQUETANDO Kernel..."
-#./../mkbootimg/mkbootimg --kernel arch/arm64/boot/Image.gz-dtb --ramdisk arch/arm64/boot/boot.img-ramdisk.cpio.gz --cmdline 'console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 androidboot.bootdevice=7824900.sdhci earlycon=msm_hsl_uart,0x78B0000 buildvariant=eng androidboot.selinux=permissive enforcing=0' --base 0x80000000 -o arch/arm64/boot/boot.img
-#echo "> ELIMINANDO MODULOS ANTERIORES"
-#rm -rf /media/psf/Home/Desktop/kmodules
-#mkdir /media/psf/Home/Desktop/kmodules
-#echo "> COPIANDO MODULOS A /media/psf/Home/Desktop/kmodules"
-#find . -type f -name "*.ko" -exec cp -fv {} /media/psf/Home/Desktop/kmodules/. \;
-#echo "> COPIANDO boot.img a /media/psf/Home/Desktop/"
-#cp arch/arm64/boot/boot.img /media/psf/Home/Desktop/.
+clear
+echo "#########################################"
+echo "##### LOUP Kernel - Build Script ########"
+echo "#########################################"
 
-~/CAF/AnyKernel2/build.sh
-echo "WAAAAAAAF IS DONE"
+
+# CCACHE configuration
+# ====================
+# If you want you can install ccache to speedup recompilation time.
+# In ubuntu just run "sudo apt-get install ccache".
+# By default CCACHE will use 2G, change the value of CCACHE_MAX_SIZE
+# to meet your needs.
+if [ -x "$(command -v ccache)" ]
+then
+  # If you want to clean the ccache
+  # run this script with -clear-ccache
+  if [[ "$*" == *"-clear-ccache"* ]]
+  then
+    echo -e "\n\033[0;31m> Cleaning ~/.ccache contents\033[0;0m" 
+    rm -rf ~/.ccache
+  fi
+  # If you want to build *without* using ccache
+  # run this script with -no-ccache flag
+  if [[ "$*" != *"-no-ccache"* ]] 
+  then
+    export USE_CCACHE=1
+    export CCACHE_DIR=~/.ccache
+    export CCACHE_MAX_SIZE=2G
+    echo -e "\n> $(ccache -M $CCACHE_MAX_SIZE)"
+    echo -e "\n\033[0;32m> Using ccache, to disable it run this script with -no-ccache\033[0;0m\n"
+  else
+    echo -e "\n\033[0;31m> NOT Using ccache, to enable it run this script without -no-ccache\033[0;0m\n"
+  fi
+else
+  echo -e "\n\033[0;33m> [Optional] ccache not installed. You can install it (in ubuntu) using 'sudo apt-get install ccache'\033[0;0m\n"
+fi
+
+# Want to use a different toolchain? (Linaro, UberTC, etc)
+# ==================================
+# point CROSS_COMPILE to the folder of the desired toolchain
+# don't forget to specify the prefix. Mine is: aarch64-linux-android-
+CROSS_COMPILE=../aarch64-linux-android-6.x/bin/aarch64-linux-android-
+
+# Are we using ccache?
+if [ -n "$USE_CCACHE" ] 
+then
+  CROSS_COMPILE="ccache $CROSS_COMPILE"  
+fi
+
+# Start menuconfig
+echo -e "> Opening .config file...\n"
+ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make menuconfig
+
+echo -e "> Starting kernel compilation using .config file...\n"
+start=$SECONDS
+
+# Want custom kernel flags?
+# =========================
+# KBUILD_LOUP_CFLAGS: Here you can set custom compilation 
+# flags to turn off unwanted warnings, or even set a 
+# different optimization level. 
+# To see how it works, check the Makefile ... file, 
+# line 625 to 628, located in the root dir of this kernel.
+KBUILD_LOUP_CFLAGS="-Wno-misleading-indentation -Wno-bool-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2" 
+KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make -j5
+
+# Get current kernel version
+LOUP_VERSION=$(head -n3 Makefile | sed -E 's/.*(^\w+\s[=]\s)//g' | xargs | sed -E 's/(\s)/./g')
+echo -e "\n\n> Packing Loup Kernel v$LOUP_VERSION\n\n"
+# Pack the kernel as a flashable TWRP zip. Nougat Edition
+./../AnyKernel2/build.sh $LOUP_VERSION N
+
+end=$SECONDS
+duration=$(( end - start ))
+printf "\n\033[0;33m> Completed in %dh:%dm:%ds\n" $(($duration/3600)) $(($duration%3600/60)) $(($duration%60))
+echo -e "=====================================\n"

@@ -4,6 +4,9 @@ echo "#########################################"
 echo "##### LOUP Kernel - Build Script ########"
 echo "#########################################"
 
+# ENV configuration
+# =================
+export LOUP_WORKING_DIR=$(dirname "$(pwd)")
 
 # CCACHE configuration
 # ====================
@@ -40,7 +43,7 @@ fi
 # ==================================
 # point CROSS_COMPILE to the folder of the desired toolchain
 # don't forget to specify the prefix. Mine is: aarch64-linux-android-
-CROSS_COMPILE=../aarch64-linux-android-6.x/bin/aarch64-linux-android-
+CROSS_COMPILE=$LOUP_WORKING_DIR/aarch64-linux-android-6.x/bin/aarch64-linux-android-
 
 # Are we using ccache?
 if [ -n "$USE_CCACHE" ] 
@@ -49,8 +52,24 @@ then
 fi
 
 # Start menuconfig
-echo -e "> Opening .config file...\n"
-ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make menuconfig
+# ================
+# Use -no-menuconfig flag to skip the kernel configuration step.
+# It will override any .config file present.
+if [[ "$*" == *"-no-menuconfig"* ]]
+then
+  echo -e "> Copying santoni_defconfig as .config...\n"
+  cp arch/arm64/configs/santoni_defconfig .config
+else
+  if [ -f ".config" ]
+  then    
+    echo -e "\033[0;32m> Config file already exists\033[0;0m\n"
+  else
+    echo -e "\033[0;31m> Config file not found, copying santoni_defconfig as .config...\033[0;0m\n" 
+    cp arch/arm64/configs/santoni_defconfig .config
+  fi
+  echo -e "> Opening .config file...\n"
+  ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make menuconfig
+fi
 
 echo -e "> Starting kernel compilation using .config file...\n"
 start=$SECONDS
@@ -69,7 +88,7 @@ KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$C
 LOUP_VERSION=$(head -n3 Makefile | sed -E 's/.*(^\w+\s[=]\s)//g' | xargs | sed -E 's/(\s)/./g')
 echo -e "\n\n> Packing Loup Kernel v$LOUP_VERSION\n\n"
 # Pack the kernel as a flashable TWRP zip. Nougat Edition
-./../AnyKernel2/build.sh $LOUP_VERSION N
+$LOUP_WORKING_DIR/AnyKernel2/build.sh $LOUP_VERSION N
 
 end=$SECONDS
 duration=$(( end - start ))

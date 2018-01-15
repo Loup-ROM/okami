@@ -20,15 +20,15 @@ then
   # run this script with -clear-ccache
   if [[ "$*" == *"-clear-ccache"* ]]
   then
-    echo -e "\n\033[0;31m> Cleaning ~/.ccache contents\033[0;0m" 
-    rm -rf ~/.ccache
+    echo -e "\n\033[0;31m> Cleaning $LOUP_WORKING_DIR/.ccache contents\033[0;0m" 
+    rm -rf "$LOUP_WORKING_DIR/.ccache"
   fi
   # If you want to build *without* using ccache
   # run this script with -no-ccache flag
   if [[ "$*" != *"-no-ccache"* ]] 
   then
     export USE_CCACHE=1
-    export CCACHE_DIR=~/.ccache
+    export CCACHE_DIR="$LOUP_WORKING_DIR/.ccache"
     export CCACHE_MAX_SIZE=2G
     echo -e "\n> $(ccache -M $CCACHE_MAX_SIZE)"
     echo -e "\n\033[0;32m> Using ccache, to disable it run this script with -no-ccache\033[0;0m\n"

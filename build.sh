@@ -4,9 +4,27 @@ echo "#########################################"
 echo "##### LOUP Kernel - Build Script ########"
 echo "#########################################"
 
+# Make statement declaration
+# ==========================
+# If compilation uses menuconfig, make operation will use .config 
+# instead of santoni_defconfig directly.
+MAKE_STATEMENT=make
+
 # ENV configuration
 # =================
 export LOUP_WORKING_DIR=$(dirname "$(pwd)")
+
+
+# Menuconfig configuration
+# ================
+# If -no-menuconfig flag is present we will skip the kernel configuration step.
+# Make operation will use santoni_defconfig directly.
+if [[ "$*" == *"-no-menuconfig"* ]]
+then
+  NO_MENUCONFIG=1
+  MAKE_STATEMENT="$MAKE_STATEMENT KCONFIG_CONFIG=./arch/arm64/configs/santoni_defconfig"
+fi
+
 
 # CCACHE configuration
 # ====================
@@ -55,10 +73,10 @@ fi
 # ================
 # Use -no-menuconfig flag to skip the kernel configuration step.
 # It will override any .config file present.
-if [[ "$*" == *"-no-menuconfig"* ]]
+if [ -n "$NO_MENUCONFIG" ]
 then
-  echo -e "> Copying santoni_defconfig as .config...\n"
-  cp arch/arm64/configs/santoni_defconfig .config
+  echo -e "> Skipping menuconfig...\n"
+  echo -e "> Starting kernel compilation using santoni_defconfig file directly...\n"
 else
   if [ -f ".config" ]
   then    
@@ -69,9 +87,9 @@ else
   fi
   echo -e "> Opening .config file...\n"
   ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make menuconfig
+  echo -e "> Starting kernel compilation using .config file...\n"
 fi
 
-echo -e "> Starting kernel compilation using .config file...\n"
 start=$SECONDS
 
 # Want custom kernel flags?
@@ -82,7 +100,7 @@ start=$SECONDS
 # To see how it works, check the Makefile ... file, 
 # line 625 to 628, located in the root dir of this kernel.
 KBUILD_LOUP_CFLAGS="-Wno-misleading-indentation -Wno-bool-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2" 
-KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make -j5
+KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j5
 
 # Get current kernel version
 LOUP_VERSION=$(head -n3 Makefile | sed -E 's/.*(^\w+\s[=]\s)//g' | xargs | sed -E 's/(\s)/./g')

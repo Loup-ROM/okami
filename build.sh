@@ -106,7 +106,7 @@ KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$C
 LOUP_VERSION=$(head -n3 Makefile | sed -E 's/.*(^\w+\s[=]\s)//g' | xargs | sed -E 's/(\s)/./g')
 echo -e "\n\n> Packing Loup Kernel v$LOUP_VERSION\n\n"
 # Pack the kernel as a flashable TWRP zip. Nougat Edition
-$LOUP_WORKING_DIR/AnyKernel2/build.sh $LOUP_VERSION N
+$LOUP_WORKING_DIR/AnyKernel2/build.sh $LOUP_VERSION O
 
 end=$SECONDS
 duration=$(( end - start ))

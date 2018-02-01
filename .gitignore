@@ -100,5 +100,5 @@ all.config
 # Binares
 ipa_common
 
-# Old config file
-santoni_defconfig.old
+# Old config files
+*.old

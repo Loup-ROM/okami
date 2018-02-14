@@ -111,4 +111,4 @@ $LOUP_WORKING_DIR/AnyKernel2/build.sh $LOUP_VERSION N
 end=$SECONDS
 duration=$(( end - start ))
 printf "\n\033[0;33m> Completed in %dh:%dm:%ds\n" $(($duration/3600)) $(($duration%3600/60)) $(($duration%60))
-echo -e "=====================================\n"
+echo -e "=====================================\033[0;0m\n"

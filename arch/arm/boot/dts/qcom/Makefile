@@ -287,7 +287,9 @@ dtb-$(CONFIG_ARCH_MSM8940) += msm8940-pmi8950-qrd-sku7.dtb
 	sdm450-qrd.dtb \
 	sdm450-pmi8940-mtp.dtb \
 	sdm450-pmi8937-mtp.dtb \
-	sdm450-iot-mtp.dtb
+	sdm450-iot-mtp.dtb \
+	sda450-cdp.dtb \
+	sda450-mtp.dtb
 
 #dtb-$(CONFIG_ARCH_MDM9607) += mdm9607-rumi.dtb \
 	mdm9607-cdp.dtb \

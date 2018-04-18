@@ -42,6 +42,10 @@
 #include "peripheral-loader.h"
 
 #define DISABLE_SSR 0x9889deed
+
+/* Xiaomi didn't publish the whole code.. was missing this var*/
+#define WT_SUBSYSTEM_REASTART_LEVEL "related"
+
 /* If set to 0x9889deed, call to subsystem_restart_dev() returns immediately */
 static uint disable_restart_work;
 module_param(disable_restart_work, uint, S_IRUGO | S_IWUSR);
@@ -1643,6 +1647,16 @@ struct subsys_device *subsys_register(struct subsys_desc *desc)
 	subsys->desc->sysmon_pid = -1;
 	strlcpy(subsys->desc->fw_name, desc->name,
 			sizeof(subsys->desc->fw_name));
+
+	if (0 == strncmp(WT_SUBSYSTEM_REASTART_LEVEL, "SYSTEM", 6)) {
+		printk("XXX::restartlevel system\r\n");
+		subsys->restart_level = RESET_SOC;
+	}
+
+	if (0 == strncmp(WT_SUBSYSTEM_REASTART_LEVEL, "RELATED", 7)) {
+		printk("XXX::restartlevel related\r\n");
+		subsys->restart_level = RESET_SUBSYS_COUPLED;
+	}
 
 	subsys->notify = subsys_notif_add_subsys(desc->name);
 

@@ -11,7 +11,7 @@
  */
 
 /* 
- * Let's change voltages first. -5000 -5000
+ * Let's change voltages first. -5000 -5000 -5000
  * 
  * Original values:
  *      regulator-min-microvolt = <1050000>;
@@ -21,29 +21,37 @@
  *      qcom,cpr-voltage-floor =    <1150000 1150000 1250000>;
  *      qcom,cpr-init-voltage-ref = <1155000 1225000 1350000>;
  *
+ *	regulator-min-microvolt = <1>;
+ *	regulator-max-microvolt = <7>;
+ *
  *	qcom,cpr-corner-map = <1 2 3 3 3 3 3>;
  *
  */
 
 &pm8937_s5 {
 	regulator-min-microvolt = <1050000>;
-	regulator-max-microvolt = <1340000>;
+	regulator-max-microvolt = <1335000>;
 };
 
 &apc_vreg_corner {
-	qcom,cpr-voltage-ceiling = 	<1145000 1215000 1340000>;
-	qcom,cpr-voltage-floor =   	<1140000 1140000 1240000>;
-	qcom,cpr-init-voltage-ref = 	<1145000 1215000 1340000>;
+	qcom,cpr-voltage-ceiling = 	<1140000 1210000 1335000>;
+	qcom,cpr-voltage-floor =   	<1135000 1135000 1235000>;
+	qcom,cpr-init-voltage-ref = 	<1140000 1210000 1335000>;
 
-	qcom,cpr-corner-map = <1 1 2 2 3 3 3>;
+	regulator-min-microvolt = <1>;
+	regulator-max-microvolt = <8>;
+
+
+	qcom,cpr-corner-map = <1 1 1 1 2 2 3 3>;
         qcom,cpr-corner-frequency-map =
-                        <1 960000000>,
-                        <2 1094400000>,
-                        <3 1209600000>,
-                        <4 1248000000>,
-                        <5 1344000000>,
-                        <6 1401000000>,
-                        <7 1497600000>;
+			<1 768000000>,
+                        <2 960000000>,
+                        <3 1094400000>,
+                        <4 1209600000>,
+                        <5 1248000000>,
+                        <6 1344000000>,
+                        <7 1401000000>,
+                        <8 1497600000>;
 
 };
 
@@ -59,13 +67,14 @@
                         <          0 0>,
 	/*Mods*/
 			<  768000000 1>,
-                        <  960000000 1>,
-                        < 1094400000 2>,
-                        < 1248000000 4>,
-                        < 1344000000 5>,
-                        < 1401000000 6>,
+                        <  960000000 2>,
+                        < 1094400000 3>,
+			< 1209600000 4>,
+                        < 1248000000 5>,
+                        < 1344000000 6>,
+                        < 1401000000 7>,
 	/*Mods*/
-			< 1497600000 7>;
+			< 1497600000 8>;
 };
 
 &msm_cpufreq {

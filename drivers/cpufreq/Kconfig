@@ -55,6 +55,16 @@ config CPU_FREQ_STAT_DETAILS
 
 	  If in doubt, say N.
 
+config CPU_VOLTAGE_CONTROL
+	bool "Enable sysfs interface to control CPU voltage"
+	depends on CPU_FREQ
+	default n
+	help
+          Allows to modify voltages using the sysfs interface.
+          For advanced users only!, it may harm your device.
+	  
+          If in doubt, say N.
+
 choice
 	prompt "Default CPUFreq governor"
 	default CPU_FREQ_DEFAULT_GOV_USERSPACE if ARM_SA1100_CPUFREQ || ARM_SA1110_CPUFREQ

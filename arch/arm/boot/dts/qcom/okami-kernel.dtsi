@@ -10,17 +10,32 @@
  * GNU General Public License for more details.
  */
 
+/* 
+ * Let's change voltages first. -5000 -5000
+ * 
+ * Original values:
+ *      regulator-min-microvolt = <1050000>;
+ *      regulator-max-microvolt = <1350000>;
+ *
+ *	qcom,cpr-voltage-ceiling =  <1155000 1225000 1350000>;
+ *      qcom,cpr-voltage-floor =    <1150000 1150000 1250000>;
+ *      qcom,cpr-init-voltage-ref = <1155000 1225000 1350000>;
+ *
+ *	qcom,cpr-corner-map = <1 2 3 3 3 3 3>;
+ *
+ */
+
 &pm8937_s5 {
 	regulator-min-microvolt = <1050000>;
-	regulator-max-microvolt = <1350000>;
+	regulator-max-microvolt = <1340000>;
 };
 
 &apc_vreg_corner {
-	qcom,cpr-voltage-ceiling = <1155000 1225000 1350000>;
-	qcom,cpr-voltage-floor =   <1150000 1150000 1250000>;
-	qcom,cpr-init-voltage-ref = <1155000 1225000 1350000>;
+	qcom,cpr-voltage-ceiling = 	<1145000 1215000 1340000>;
+	qcom,cpr-voltage-floor =   	<1140000 1140000 1240000>;
+	qcom,cpr-init-voltage-ref = 	<1145000 1215000 1340000>;
 
-	qcom,cpr-corner-map = <1 2 3 3 3 3 3>;
+	qcom,cpr-corner-map = <1 1 2 2 3 3 3>;
         qcom,cpr-corner-frequency-map =
                         <1 960000000>,
                         <2 1094400000>,
@@ -42,45 +57,20 @@
 
         qcom,speed0-bin-v0-c1 =
                         <          0 0>,
-                        <  960000000 1>,
-                        < 1094400000 2>,
-                        < 1248000000 4>,
-                        < 1344000000 5>,
-                        < 1401000000 6>;
-
-	qcom,speed1-bin-v0-c0 =
-                        <          0 0>,
-                        <  768000000 1>,
-                        <  902400000 2>,
-                        <  998400000 4>,
-                        < 1094400000 6>,
-                        < 1209600000 7>;
-
-	qcom,speed1-bin-v0-c1 =
-                        <          0 0>,
+	/*Mods*/
+			<  768000000 1>,
                         <  960000000 1>,
                         < 1094400000 2>,
                         < 1248000000 4>,
                         < 1344000000 5>,
                         < 1401000000 6>,
-                        < 1497600000 7>;
-
-	qcom,speed2-bin-v0-c0 =
-                        <          0 0>,
-                        <  768000000 1>,
-                        <  902400000 2>,
-                        <  998400000 3>;
-
-	qcom,speed2-bin-v0-c1 =
-                        <          0 0>,
-                        <  960000000 1>,
-                        < 1094400000 2>,
-                        < 1209600000 3>;
-
+	/*Mods*/
+			< 1497600000 7>;
 };
 
 &msm_cpufreq {
 	qcom,cpufreq-table-0 =
+   		        <  768000 >,
 			<  960000 >,
 			< 1094400 >,
 			< 1209600 >,

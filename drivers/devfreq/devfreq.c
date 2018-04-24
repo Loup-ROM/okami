@@ -1089,8 +1089,14 @@ static int __init devfreq_init(void)
 		pr_err("%s: couldn't create class\n", __FILE__);
 		return PTR_ERR(devfreq_class);
 	}
-
+#ifdef CONFIG_ADRENO_IDLER
+        devfreq_wq =
+            alloc_workqueue("devfreq_wq",
+                            WQ_HIGHPRI | WQ_UNBOUND | WQ_FREEZABLE |
+                            WQ_MEM_RECLAIM, 0);
+#else
 	devfreq_wq = create_freezable_workqueue("devfreq_wq");
+#endif
 	if (!devfreq_wq) {
 		class_destroy(devfreq_class);
 		pr_err("%s: couldn't create workqueue\n", __FILE__);

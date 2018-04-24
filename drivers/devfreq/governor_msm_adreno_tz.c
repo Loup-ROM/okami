@@ -24,6 +24,10 @@
 #include <soc/qcom/scm.h>
 #include "governor.h"
 
+#ifdef CONFIG_ADRENO_IDLER
+#include <linux/powersuspend.h>
+#endif
+
 static DEFINE_SPINLOCK(tz_lock);
 static DEFINE_SPINLOCK(sample_lock);
 static DEFINE_SPINLOCK(suspend_lock);
@@ -57,6 +61,10 @@ static DEFINE_SPINLOCK(suspend_lock);
 #define TZ_V2_UPDATE_WITH_CA_ID_64 0xD
 
 #define TAG "msm_adreno_tz: "
+
+#ifdef CONFIG_ADRENO_IDLER
+static bool suspended = false;
+#endif
 
 static u64 suspend_time;
 static u64 suspend_start;
@@ -338,6 +346,11 @@ static int tz_init(struct devfreq_msm_adreno_tz_data *priv,
 	return ret;
 }
 
+#ifdef CONFIG_ADRENO_IDLER
+extern int adreno_idler(struct devfreq_dev_status stats, struct devfreq *devfreq,
+		 unsigned long *freq);
+#endif
+
 static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 				u32 *flag)
 {
@@ -355,7 +368,33 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 		return result;
 	}
 
+#ifdef CONFIG_ADRENO_IDLER
+	/* Prevent overflow */
+	if (stats.busy_time >= (1 << 24) || stats.total_time >= (1 << 24)) {
+		stats.busy_time >>= 7;
+		stats.total_time >>= 7;
+	}
+#endif
+
 	*freq = stats.current_frequency;
+
+#ifdef CONFIG_ADRENO_IDLER
+	/*
+	 * Force to use & record as min freq when system has
+	 * entered pm-suspend or screen-off state.
+	 */
+	if (suspended || power_suspended) {
+		*freq = devfreq->profile->freq_table[devfreq->profile->max_state - 1];
+		return 0;
+	}
+
+	if (adreno_idler(stats, devfreq, freq)) {
+		/* adreno_idler has asked to bail out now */
+		return 0;
+	}
+
+#endif
+
 	priv->bin.total_time += stats.total_time;
 	priv->bin.busy_time += stats.busy_time;
 
@@ -518,7 +557,11 @@ static int tz_stop(struct devfreq *devfreq)
 static int tz_suspend(struct devfreq *devfreq)
 {
 	struct devfreq_msm_adreno_tz_data *priv = devfreq->data;
+
 	unsigned int scm_data[2] = {0, 0};
+#ifdef CONFIG_ADRENO_IDLER
+	suspended = true;
+#endif
 	__secure_tz_reset_entry2(scm_data, sizeof(scm_data), priv->is_64);
 
 	priv->bin.total_time = 0;
@@ -567,6 +610,9 @@ static int tz_handler(struct devfreq *devfreq, unsigned int event, void *data)
 		suspend_time += suspend_time_ms();
 		/* Reset the suspend_start when gpu resumes */
 		suspend_start = 0;
+#ifdef CONFIG_ADRENO_IDLER
+		suspended = false;
+#endif
 		spin_unlock(&suspend_lock);
 
 	case DEVFREQ_GOV_INTERVAL:

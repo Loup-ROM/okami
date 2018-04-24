@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 3.18.104 Kernel Configuration
+# Linux/arm64 3.18.105 Kernel Configuration
 #
 CONFIG_ARM64=y
 CONFIG_64BIT=y
@@ -488,6 +488,8 @@ CONFIG_COMPAT=y
 #
 CONFIG_SUSPEND=y
 CONFIG_SUSPEND_FREEZER=y
+CONFIG_POWERSUSPEND=y
+# CONFIG_POWERSUSPEND_DEBUG is not set
 CONFIG_SUSPEND_SKIP_SYNC=y
 CONFIG_WAKELOCK=y
 CONFIG_PM_SLEEP=y

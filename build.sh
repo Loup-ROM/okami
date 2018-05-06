@@ -63,6 +63,19 @@ fi
 # don't forget to specify the prefix. Mine is: aarch64-linux-android-
 CROSS_COMPILE=$LOUP_WORKING_DIR/aarch64-linux-android-7.x/bin/aarch64-linux-android-
 
+
+# Want to use clang?
+# ==================
+# Use -clang flag to compile the kernel using clang instead of gcc
+# Point CC to the folder of the desired clang binary
+if [[ "$*" == *"-clang"* ]]
+then
+  USE_CLANG=1
+  CC=$LOUP_WORKING_DIR/sdclang-4.0/bin/clang
+  CLANG_TRIPLE=aarch64-linux-gnu-
+fi
+
+
 # Are we using ccache?
 if [ -n "$USE_CCACHE" ] 
 then
@@ -100,7 +113,12 @@ start=$SECONDS
 # To see how it works, check the Makefile ... file, 
 # line 625 to 628, located in the root dir of this kernel.
 KBUILD_LOUP_CFLAGS="-Wno-misleading-indentation -Wno-bool-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2" 
-KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j5
+if [ -n "$USE_CLANG" ]
+then
+  make -j$(nproc --all) ARCH=arm64 CC="$CC" CLANG_TRIPLE="$CLANG_TRIPLE" CROSS_COMPILE="$CROSS_COMPILE"
+else
+  KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j5
+fi
 
 # Get current kernel version
 LOUP_VERSION=$(head -n3 Makefile | sed -E 's/.*(^\w+\s[=]\s)//g' | xargs | sed -E 's/(\s)/./g')

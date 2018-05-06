@@ -11,7 +11,7 @@
  */
 
 /* 
- * Let's change voltages first. -5000 -5000 -5000 -5000 -5000
+ * Let's change voltages first. -5000 -5000 -5000 -5000
  * 
  * Original values:
  *      regulator-min-microvolt = <1050000>;
@@ -30,13 +30,14 @@
 
 &pm8937_s5 {
 	regulator-min-microvolt = <1050000>;
-	regulator-max-microvolt = <1325000>;
+	regulator-max-microvolt = <1330000>;
 };
 
+
 &apc_vreg_corner {
-	qcom,cpr-voltage-ceiling = 	<1130000 1200000 1325000>;
-	qcom,cpr-voltage-floor =   	<1125000 1125000 1225000>;
-	qcom,cpr-init-voltage-ref = 	<1130000 1200000 1325000>;
+	qcom,cpr-voltage-ceiling = 	<1135000 1205000 1330000>;
+	qcom,cpr-voltage-floor =   	<1130000 1130000 1230000>;
+	qcom,cpr-init-voltage-ref = 	<1135000 1205000 1330000>;
 
 	regulator-min-microvolt = <1>;
 	regulator-max-microvolt = <8>;
@@ -54,6 +55,7 @@
                         <8 1497600000>;
 
 };
+
 
 &clock_cpu {
 	qcom,speed0-bin-v0-c0 =
@@ -77,6 +79,7 @@
 			< 1497600000 8>;
 };
 
+
 &msm_cpufreq {
 	qcom,cpufreq-table-0 =
    		        <  768000 >,
@@ -95,3 +98,4 @@
 			< 1094400 >,
 			< 1209600 >;
 };
+

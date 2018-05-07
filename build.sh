@@ -73,13 +73,21 @@ then
   USE_CLANG=1
   CC=$LOUP_WORKING_DIR/sdclang-4.0/bin/clang
   CLANG_TRIPLE=aarch64-linux-gnu-
+  echo -e "\033[0;36m> Compiling kernel using CLANG\033[0;0m\n"
+else
+  echo -e "\033[0;34m> Compiling kernel using GCC\033[0;0m\n"
 fi
 
 
 # Are we using ccache?
 if [ -n "$USE_CCACHE" ] 
 then
+  if [ -n "$USE_CLANG" ]
+  then
+  CC="ccache $CC"
+  else
   CROSS_COMPILE="ccache $CROSS_COMPILE"  
+  fi
 fi
 
 # Start menuconfig
@@ -111,13 +119,15 @@ start=$SECONDS
 # flags to turn off unwanted warnings, or even set a 
 # different optimization level. 
 # To see how it works, check the Makefile ... file, 
-# line 625 to 628, located in the root dir of this kernel.
-KBUILD_LOUP_CFLAGS="-Wno-misleading-indentation -Wno-bool-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2" 
+# line 645 to 648, located in the root dir of this kernel.
 if [ -n "$USE_CLANG" ]
 then
-  make -j$(nproc --all) ARCH=arm64 CC="$CC" CLANG_TRIPLE="$CLANG_TRIPLE" CROSS_COMPILE="$CROSS_COMPILE"
+  echo "USING $CROSS_COMPILE"
+  KBUILD_LOUP_CFLAGS="-Wno-vectorizer-no-neon -Wno-pointer-sign -Wno-sometimes-uninitialized -Wno-tautological-constant-out-of-range-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
+  make -j$(nproc --all) ARCH=arm64 CC="$CC" CLANG_TRIPLE="$CLANG_TRIPLE" CROSS_COMPILE="$CROSS_COMPILE" KBUILD_LOUP_CFLAGS="$KBUILD_LOUP_CFLAGS"
 else
-  KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j5
+  KBUILD_LOUP_CFLAGS="-Wno-misleading-indentation -Wno-bool-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
+  KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j$(nproc --all)
 fi
 
 # Get current kernel version

@@ -89,4 +89,4 @@
 	};
 };
 
-#include "okami-kernel.dtsi"
+//#include "okami-kernel.dtsi"

@@ -122,7 +122,6 @@ start=$SECONDS
 # line 645 to 648, located in the root dir of this kernel.
 if [ -n "$USE_CLANG" ]
 then
-  echo "USING $CROSS_COMPILE"
   KBUILD_LOUP_CFLAGS="-Wno-vectorizer-no-neon -Wno-pointer-sign -Wno-sometimes-uninitialized -Wno-tautological-constant-out-of-range-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
   make -j$(nproc --all) ARCH=arm64 CC="$CC" CLANG_TRIPLE="$CLANG_TRIPLE" CROSS_COMPILE="$CROSS_COMPILE" KBUILD_LOUP_CFLAGS="$KBUILD_LOUP_CFLAGS"
 else

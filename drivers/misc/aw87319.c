@@ -65,6 +65,7 @@ struct pinctrl_state *AW87319_rst_high = NULL;
 struct pinctrl_state *AW87319_rst_low = NULL;
 
 char Spk_Pa_Flag[] = " ";
+static int i2c_ok = 0;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GPIO Control
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +172,13 @@ unsigned char AW87319_Audio_Receiver(void)
 
 unsigned char AW87319_Audio_Speaker(void)
 {
+	if(i2c_ok < 0)
+		return 0;
+
 	AW87319_HW_ON();
+
+	// For some reason it can't write these values =(
+
 	I2C_write_reg(0x02, 0x28);		// BATSAFE
 	I2C_write_reg(0x03, 0x05);		// BOV
 	I2C_write_reg(0x04, 0x04);		// BP
@@ -182,13 +189,15 @@ unsigned char AW87319_Audio_Speaker(void)
 	I2C_write_reg(0x09, 0x02);		// AGC1
 	I2C_write_reg(0x01, 0x03);              // CHIP disable; Class D Enable; Boost Enable
 	I2C_write_reg(0x01, 0x07);		// CHIP Enable; Class D Enable; Boost Enable
-
+	
 	return 0;
 }
 
 unsigned char AW87319_Audio_OFF(void)
 {
-	I2C_write_reg(0x01, 0x00);
+	if(i2c_ok < 0)
+		return 0;
+	I2C_write_reg(0x01, 0x00); // -> the other issue is here.
 	AW87319_HW_OFF();
 
 	return 0;
@@ -217,7 +226,7 @@ unsigned char AW87319_SW_OFF(void)
 unsigned char AW87319_HW_ON(void)
 {
 	AW87319_pa_pwron();
-	I2C_write_reg(0x64, 0x2C);
+	I2C_write_reg(0x64, 0x2C); //-> The issue is here
 
 	return 0;
 }
@@ -372,7 +381,7 @@ static int AW87319_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	if(!cnt)
 	{
 		err = -ENODEV;
-		
+		i2c_ok = err;	
 		AW87319_HW_OFF();
 		strncpy(Spk_Pa_Flag, "S88537A12", 9);
 		pr_err("%s:can not find AW87319, board  is S88537A12\n!", __func__);

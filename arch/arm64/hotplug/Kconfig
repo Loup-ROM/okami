@@ -9,4 +9,10 @@ config THUNDERPLUG_CONTROL
 	help
 	  This driver hotplugs cpu cores based on per-core load
 
+config MAKO_CONTROL
+	bool "Mako"
+	depends on CUSTOM_HOTPLUG
+	help
+	  An OSS replacement for mpdecision. Developed by Francisco Franco
+
 endmenu

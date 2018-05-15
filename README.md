@@ -12,7 +12,9 @@
 - Fingerprint boost driver.
 - Underclocked / Undervolted.
 - Ability to enable/disable cores (No mpdecision).
-- Various hotplugs to choose.
+- Hotplugs included:
+    - Thunderplug
+    - Alucard (enabled by default)
 
 ## Want to compile it?
 

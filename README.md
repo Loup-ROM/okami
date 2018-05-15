@@ -10,7 +10,9 @@
 - F2FS / NTFS / [exFat](https://github.com/dorimanx/exfat-nofuse).
 - Energy Aware Scheduler - EAS.
 - Fingerprint boost driver.
-- Undervolted.
+- Underclocked / Undervolted.
+- Ability to enable/disable cores (No mpdecision).
+- Various hotplugs to choose.
 
 ## Want to compile it?
 

@@ -123,10 +123,10 @@ start=$SECONDS
 if [ -n "$USE_CLANG" ]
 then
   KBUILD_LOUP_CFLAGS="-Wno-vectorizer-no-neon -Wno-pointer-sign -Wno-sometimes-uninitialized -Wno-tautological-constant-out-of-range-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
-  make -j$(nproc --all) ARCH=arm64 CC="$CC" CLANG_TRIPLE="$CLANG_TRIPLE" CROSS_COMPILE="$CROSS_COMPILE" KBUILD_LOUP_CFLAGS="$KBUILD_LOUP_CFLAGS"
+  make -j5 ARCH=arm64 CC="$CC" CLANG_TRIPLE="$CLANG_TRIPLE" CROSS_COMPILE="$CROSS_COMPILE" KBUILD_LOUP_CFLAGS="$KBUILD_LOUP_CFLAGS"
 else
   KBUILD_LOUP_CFLAGS="-Wno-misleading-indentation -Wno-bool-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
-  KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j$(nproc --all)
+  KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j5
 fi
 
 # Get current kernel version

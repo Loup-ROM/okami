@@ -7,8 +7,14 @@
 - Nougat and Oreo support.
 - Include [patches for clang](https://github.com/bitrvmpd/okami/pull/1) and [gcc 4.9+ support](https://github.com/bitrvmpd/msm-3.18/pull/18).
 - WireGuard support.
-- F2FS.
-- Undervolted (soon).
+- F2FS / NTFS / [exFat](https://github.com/dorimanx/exfat-nofuse).
+- Energy Aware Scheduler - EAS.
+- Fingerprint boost driver.
+- Underclocked / Undervolted.
+- Ability to enable/disable cores (No mpdecision).
+- Hotplugs included:
+    - Thunderplug
+    - Alucard (enabled by default)
 
 ## Want to compile it?
 

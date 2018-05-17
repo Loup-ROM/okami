@@ -130,10 +130,10 @@ else
 fi
 
 # Get current kernel version
-LOUP_VERSION=$(head -n3 Makefile | sed -E 's/.*(^\w+\s[=]\s)//g' | xargs | sed -E 's/(\s)/./g')
+LOUP_VERSION=$(cat .config | grep -P "^(CONFIG_LOCALVERSION)" | grep -oP "(\d+\.)?(\d+\.)?(\*|\d+)")
 echo -e "\n\n> Packing Loup Kernel v$LOUP_VERSION\n\n"
 # Pack the kernel as a flashable TWRP zip. Nougat Edition
-$LOUP_WORKING_DIR/AnyKernel2/build.sh $LOUP_VERSION O
+$LOUP_WORKING_DIR/AnyKernel2/build.sh $LOUP_VERSION O Ōkami
 
 end=$SECONDS
 duration=$(( end - start ))

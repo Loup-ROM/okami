@@ -13,8 +13,11 @@
 - Underclocked / Undervolted.
 - Ability to enable/disable cores (No mpdecision).
 - Hotplugs included:
-    - Thunderplug
-    - Alucard (enabled by default)
+    - Thunderplug.
+    - Alucard (enabled by default).
+- Adreno Idler (nougat, oreo soon).
+- Powersuspend (nougat, oreo soon).
+- Spectrum support (soon).
 
 ## Want to compile it?
 

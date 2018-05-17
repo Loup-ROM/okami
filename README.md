@@ -15,6 +15,7 @@
 - Hotplugs included:
     - Thunderplug
     - Alucard (enabled by default)
+- Spectrum support (soon)
 
 ## Want to compile it?
 

@@ -13,9 +13,11 @@
 - Underclocked / Undervolted.
 - Ability to enable/disable cores (No mpdecision).
 - Hotplugs included:
-    - Thunderplug
-    - Alucard (enabled by default)
-- Spectrum support (soon)
+    - Thunderplug.
+    - Alucard (enabled by default).
+- Adreno Idler.
+- Powersuspend.
+- Spectrum support (soon).
 
 ## Want to compile it?
 

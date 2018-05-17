@@ -15,8 +15,8 @@
 - Hotplugs included:
     - Thunderplug.
     - Alucard (enabled by default).
-- Adreno Idler.
-- Powersuspend.
+- Adreno Idler (nougat, oreo soon).
+- Powersuspend (nougat, oreo soon).
 - Spectrum support (soon).
 
 ## Want to compile it?

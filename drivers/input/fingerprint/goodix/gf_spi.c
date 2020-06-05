@@ -108,11 +108,17 @@ static int driver_init_partial(struct gf_dev *gf_dev);
 
 static void gf_enable_irq(struct gf_dev *gf_dev)
 {
+	struct irq_desc *desc;
+
 	if (gf_dev->irq_enabled) {
 		pr_warn("IRQ has been enabled.\n");
 	} else {
-		enable_irq(gf_dev->irq);
-		gf_dev->irq_enabled = 1;
+		desc = irq_to_desc(gf_dev->irq);
+		if (desc && desc->depth > 0) {
+			enable_irq(gf_dev->irq);
+			gf_dev->irq_enabled = 1;
+			pr_info("%s: irq_enabled:%d", __func__, gf_dev->irq_enabled);
+		}
 	}
 }
 

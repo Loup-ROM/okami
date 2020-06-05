@@ -60,3 +60,19 @@ config PSTORE_RAM
 	  "ramoops.ko".
 
 	  For more information, see Documentation/ramoops.txt.
+
+config PSTORE_LAST_KMSG
+	bool "export /proc/last_kmsg"
+	default y
+	depends on PSTORE
+	help
+	  When the option is enabled, pstore will export a proc filesystem
+	  interface /proc/last_kmsg.
+
+config SANTONI_PSTORE
+	bool "Enable Log panic/oops for Redmi 4X (santoni)"
+	depends on PSTORE
+	select PSTORE_CONSOLE
+	select PSTORE_PMSG
+	select PSTORE_RAM
+	select PSTORE_LAST_KMSG

@@ -3,3 +3,7 @@ config FINGERPRINT_GOODIX_GF3208
 	depends on FINGERPRINT
 	help
 	  Say Y here to enable goodix fingerprint driver support!
+
+config AP_CONTROL_CLK
+	bool "Enable AP_CONTROL_CLK"
+	depends on FINGERPRINT

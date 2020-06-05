@@ -76,3 +76,4 @@ config SANTONI_PSTORE
 	select PSTORE_PMSG
 	select PSTORE_RAM
 	select PSTORE_LAST_KMSG
+	select MSM_PRESERVE_MEM

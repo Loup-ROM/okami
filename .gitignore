@@ -102,3 +102,6 @@ android/configs/android-*.cfg
 
 # Binares
 ipa_common
+
+# out dir
+out/

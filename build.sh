@@ -83,7 +83,7 @@ then
   echo -e "> Skipping menuconfig...\n"
   echo -e "> Starting kernel compilation using santoni_defconfig file directly...\n"
 else
-  if [ -f ".config" ]
+  if [ -f "out/.config" ]
   then    
     echo -e "\033[0;32m> Config file already exists\033[0;0m\n"
   else

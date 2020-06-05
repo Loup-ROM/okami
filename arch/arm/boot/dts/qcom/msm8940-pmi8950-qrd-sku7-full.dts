@@ -11507,7 +11507,7 @@
 			goodix,gpio_irq = <0xa7 0x9 0x0>;
 			clock-names = "iface_clk", "core_clk";
 			clocks = <0x2b 0x8caa5b4f 0x2b 0x759a76b0>;
-			pinctrl-names = "goodixfp_spi_active", "goodixfp_reset_reset", "goodixfp_reset_active", "goodixfp_irq_active";
+			pinctrl-names = "goodix_spi_active", "goodix_reset_reset", "goodix_reset_active", "goodix_irq_active";
 			pinctrl-0 = <0x19b>;
 			pinctrl-1 = <0x19c>;
 			pinctrl-2 = <0x19d>;

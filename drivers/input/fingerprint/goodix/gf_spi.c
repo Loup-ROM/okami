@@ -65,6 +65,7 @@
 #define SPIDEV_MAJOR		225
 #define N_SPI_MINORS		32
 
+#define AP_CONTROL_CLK 1
 
 struct gf_key_map key_map[] = {
 	{  "POWER",  KEY_POWER  },

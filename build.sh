@@ -8,7 +8,7 @@ echo "#########################################"
 # ==========================
 # If compilation uses menuconfig, make operation will use .config
 # instead of santoni_defconfig directly.
-MAKE_STATEMENT=make
+MAKE_STATEMENT="make O=out"
 
 # ENV configuration
 # =================
@@ -17,6 +17,8 @@ then
   export LOUP_WORKING_DIR=$(dirname "$(pwd)")
 fi
 
+# Create "out" dir to avoid compilation issues
+mkdir -p $(pwd)/out
 
 # Menuconfig configuration
 # ================
@@ -64,7 +66,7 @@ fi
 # ==================================
 # point CROSS_COMPILE to the folder of the desired toolchain
 # don't forget to specify the prefix. Mine is: aarch64-linux-android-
-CROSS_COMPILE=$LOUP_WORKING_DIR/aarch64-linux-android-7.x/bin/aarch64-linux-android-
+CROSS_COMPILE=$LOUP_WORKING_DIR/aarch64-linux-android-4.9/bin/aarch64-linux-android-
 
 # Are we using ccache?
 if [ -n "$USE_CCACHE" ] 
@@ -86,10 +88,10 @@ else
     echo -e "\033[0;32m> Config file already exists\033[0;0m\n"
   else
     echo -e "\033[0;31m> Config file not found, copying santoni_defconfig as .config...\033[0;0m\n" 
-    cp arch/arm64/configs/santoni_defconfig .config
+    cp arch/arm64/configs/santoni_defconfig out/.config
   fi
   echo -e "> Opening .config file...\n"
-  ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make menuconfig
+  ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make O=out menuconfig
   echo -e "> Starting kernel compilation using .config file...\n"
 fi
 

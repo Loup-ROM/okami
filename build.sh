@@ -27,7 +27,7 @@ mkdir -p $(pwd)/out
 if [[ "$*" == *"-no-menuconfig"* ]]
 then
   NO_MENUCONFIG=1
-  MAKE_STATEMENT="$MAKE_STATEMENT KCONFIG_CONFIG=./arch/arm64/configs/santoni_defconfig"
+  MAKE_STATEMENT="$MAKE_STATEMENT KCONFIG_CONFIG=./arch/arm64/configs/santoni-nougat_defconfig"
 fi
 
 
@@ -81,14 +81,14 @@ fi
 if [ -n "$NO_MENUCONFIG" ]
 then
   echo -e "> Skipping menuconfig...\n"
-  echo -e "> Starting kernel compilation using santoni_defconfig file directly...\n"
+  echo -e "> Starting kernel compilation using santoni-nougat_defconfig file directly...\n"
 else
   if [ -f "out/.config" ]
   then    
     echo -e "\033[0;32m> Config file already exists\033[0;0m\n"
   else
     echo -e "\033[0;31m> Config file not found, copying santoni_defconfig as .config...\033[0;0m\n" 
-    cp arch/arm64/configs/santoni_defconfig out/.config
+    cp arch/arm64/configs/santoni-nougat_defconfig out/.config
   fi
   echo -e "> Opening .config file...\n"
   ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE make O=out menuconfig

@@ -1,0 +1,1 @@
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += cpp/

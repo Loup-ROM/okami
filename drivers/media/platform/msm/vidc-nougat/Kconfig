@@ -1,0 +1,11 @@
+#
+# VIDEO CORE
+#
+
+menuconfig MSM_VIDC_V4L2_NOUGAT
+	bool "Qualcomm MSM V4L2 based video driver for Nougat"
+		depends on ARCH_MSM && VIDEO_V4L2
+		select VIDEOBUF2_CORE
+
+source "drivers/media/platform/msm/vidc-nougat/vmem/Kconfig"
+source "drivers/media/platform/msm/vidc-nougat/governors/Kconfig"

@@ -1,0 +1,24 @@
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/sensor
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/codecs
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/isps
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/pproc
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/msm_vb2
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/camera
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/jpeg_10
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/jpeg_dma
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/fd
+ccflags-y += -Idrivers/media/platform/msm/camera_v2-nougat/common
+
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += common/
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += msm.o
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += camera/
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += msm_vb2/
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += sensor/
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += pproc/
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += isp/
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += ispif/
+obj-$(CONFIG_MSMB_JPEG) += jpeg_10/
+obj-$(CONFIG_MSM_JPEGDMA) += jpeg_dma/
+obj-$(CONFIG_MSMB_CAMERA_NOUGAT) += msm_buf_mgr/
+obj-$(CONFIG_MSM_FD) += fd/

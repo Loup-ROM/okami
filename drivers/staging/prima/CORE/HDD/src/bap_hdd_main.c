@@ -338,7 +338,7 @@ static int BSL_Open (struct hci_dev *hdev);
 static int BSL_Close (struct hci_dev *hdev);
 static int BSL_Flush(struct hci_dev *hdev);
 static int BSL_IOControl(struct hci_dev *hdev, unsigned int cmd, unsigned long arg);
-static int BSL_Write(struct sk_buff *skb);
+static int BSL_Write(struct hci_dev *hdev, struct sk_buff *skb);
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,0))
 static void BSL_Destruct(struct hci_dev *hdev);
 #endif
@@ -619,7 +619,8 @@ static VOS_STATUS WLANBAP_STARxCB
        gpBslctx->rx_skb = skb;
 
        // This is how data and events are passed up to BlueZ
-       hci_recv_frame(gpBslctx->rx_skb);
+       // bitrvmpd: Fix missing hdev
+       hci_recv_frame(gpBslctx->hdev, gpBslctx->rx_skb);
 
        // now process the next packet in the chain
        pVosPacket = pNextVosPacket;
@@ -1495,7 +1496,7 @@ static VOS_STATUS WLANBAP_EventCB
     gpBslctx->rx_skb = skb;
 
     // This is how data and events are passed up to BlueZ
-    hci_recv_frame(gpBslctx->rx_skb);
+    hci_recv_frame(gpBslctx->hdev, gpBslctx->rx_skb);
 
     return(VOS_STATUS_SUCCESS);
 } // WLANBAP_EventCB()
@@ -3604,15 +3605,16 @@ static BOOL BslProcessACLDataTx
 } // BslProcessACLDataTx()
 
 
-static inline void *hci_get_drvdata(struct hci_dev *hdev)
+/*static inline void *hci_get_drvdata(struct hci_dev *hdev)
 {
     return hdev->driver_data;
 }
-
-static inline void hci_set_drvdata(struct hci_dev *hdev, void *data)
+*/
+/*static inline void hci_set_drvdata(struct hci_dev *hdev, void *data)
 {
     hdev->driver_data = data;
 }
+*/
 
 /*---------------------------------------------------------------------------
  *   Function definitions
@@ -3786,7 +3788,7 @@ int BSL_Init ( v_PVOID_t  pvosGCtx )
     hdev->destruct = BSL_Destruct;
     hdev->owner = THIS_MODULE;
 #endif
-    hdev->ioctl    = BSL_IOControl;
+    //hdev->ioctl    = BSL_IOControl;
 
 
     /* Timeout before it is safe to send the first HCI packet */
@@ -4071,9 +4073,9 @@ static void BSL_Destruct(struct hci_dev *hdev)
 */
 //static ssize_t BSL_Write(struct file *pFile, const char __user *pBuffer,
 //                         size_t Count, loff_t *pOff)
-static int BSL_Write(struct sk_buff *skb)
+static int BSL_Write(struct hci_dev *hdev, struct sk_buff *skb)
 {
-    struct hci_dev *hdev;
+    //struct hci_dev *hdev;
     BslClientCtxType* pctx;
     v_SIZE_t written = 0;
     BOOL status;
@@ -4437,7 +4439,7 @@ VOS_STATUS WLANBAP_RegisterWithHCI(hdd_adapter_t *pAdapter)
     hdev->owner = THIS_MODULE;
     hdev->destruct = BSL_Destruct;
 #endif
-    hdev->ioctl    = BSL_IOControl;
+    //hdev->ioctl    = BSL_IOControl;
 
 
     /* Timeout before it is safe to send the first HCI packet */

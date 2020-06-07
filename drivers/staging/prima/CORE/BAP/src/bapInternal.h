@@ -114,7 +114,7 @@ when        who    what, where, why
 // How do I get BAP context from voss context? 
 #define VOS_GET_BAP_CB(ctx) vos_get_context( VOS_MODULE_ID_BAP, ctx) 
 // How do I get halHandle from voss context? 
-#define VOS_GET_HAL_CB(ctx) vos_get_context( VOS_MODULE_ID_SME, ctx) 
+#define VOS_GET_HAL_CB_BAP(ctx) vos_get_context( VOS_MODULE_ID_SME, ctx) 
 
 // Default timeout values (in BR/EDR baseband slots)
 // Physical Link Connection Accept Timer interval (0x1FA0 * 0.625 = 5.06 sec)

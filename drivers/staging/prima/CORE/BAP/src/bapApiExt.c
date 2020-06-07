@@ -156,7 +156,7 @@ WLANBAP_GetCurrentChannel
     return VOS_STATUS_E_FAULT;
   }
 
-  halHandle =  VOS_GET_HAL_CB(pBtampCtx->pvosGCtx);
+  halHandle =  VOS_GET_HAL_CB_BAP(pBtampCtx->pvosGCtx);
 
   if(NULL == halHandle)
   {

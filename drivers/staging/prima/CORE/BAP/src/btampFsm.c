@@ -182,7 +182,7 @@ bapSetKey( v_PVOID_t pvosGCtx, tCsrRoamSetKey *pSetKeyInfo )
     {
       return VOS_STATUS_E_FAULT;
     }
-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
+    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
     if (NULL == hHal) 
     {
         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
@@ -452,7 +452,7 @@ convertToCsrProfile
         return VOS_STATUS_E_FAULT;
     }
 
-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
+    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
     if (NULL == hHal) 
     {
         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
@@ -772,7 +772,7 @@ gotoStarting
         return VOS_STATUS_E_FAULT;
     }
 
-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
+    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
     if (NULL == hHal) 
     {
         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
@@ -968,7 +968,7 @@ gotoStarting
         return VOS_STATUS_E_INVAL;
     }
 #if 0
-    halStatus = sme_RoamConnect(VOS_GET_HAL_CB(btampContext->pvosGCtx), 
+    halStatus = sme_RoamConnect(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx), 
             &btampContext->csrRoamProfile, 
             NULL,   /* tScanResultHandle hBssListIn, */ 
             &btampContext->csrRoamId);
@@ -1533,7 +1533,7 @@ validAssocInd
 )
 {
     /* tHalHandle */    
-    tHalHandle hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
+    tHalHandle hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
     v_U32_t ieLen; 
   
     /* For now, always return true */ 
@@ -1702,7 +1702,7 @@ btampFsm
     }
     instanceVar = &(btampContext->bapPhysLinkMachine);
 
-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
+    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
     if (NULL == hHal) 
     {
         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
@@ -1732,7 +1732,7 @@ btampFsm
          /* TODO : Need to have better handling */ 
           if(btampContext->isBapSessionOpen == TRUE)//We want to close only BT-AMP Session
           {
-          sme_CloseSession(VOS_GET_HAL_CB(btampContext->pvosGCtx),
+          sme_CloseSession(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx),
                                          btampContext->sessionId);
           /*Added by Luiza:*/
           btampContext->isBapSessionOpen = FALSE; 
@@ -1753,7 +1753,7 @@ btampFsm
 #if 0
           if(btampContext->isBapSessionOpen == TRUE)
           {
-          sme_CloseSession(VOS_GET_HAL_CB(btampContext->pvosGCtx),
+          sme_CloseSession(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx),
                                          btampContext->sessionId);
           /*Added by Luiza:*/
           btampContext->isBapSessionOpen = FALSE; 
@@ -2158,7 +2158,7 @@ btampFsm
           //sme_RoamSetContext(); 
 #if 0
           sme_RoamSetKey(
-                  VOS_GET_HAL_CB(btampContext->pvosGCtx), 
+                  VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx), 
                   btampContext->sessionId, 
                   tSirMacAddr peerBssId, 
                   eCsrEncryptionType encryptType,
@@ -2180,7 +2180,7 @@ btampFsm
           //sme_RoamSetContext(); 
 #if 0
           sme_RoamSetKey(
-                  VOS_GET_HAL_CB(btampContext->pvosGCtx), 
+                  VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx), 
                   btampContext->sessionId, 
                   tSirMacAddr peerBssId, 
                   eCsrEncryptionType encryptType,
@@ -2376,7 +2376,7 @@ btampFsm
               ( btampContext, 
                 WLANBAP_STATUS_SUCCESS,
                 btampContext->gDiscReason);
-          /*sme_CloseSession(VOS_GET_HAL_CB(btampContext->pvosGCtx),
+          /*sme_CloseSession(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx),
                                          btampContext->sessionId);*/
           /*Action code for transition */
           gotoDisconnected(btampContext);
@@ -2426,7 +2426,7 @@ btampFsm
          // signalHCIPhysLinkCompEvent(btampContext, WLANBAP_ERROR_NO_CNCT/*btampContext->gPhysLinkStatus*/);
           signalHCIPhysLinkCompEvent(btampContext, btampContext->gPhysLinkStatus);
           gotoDisconnected(btampContext);
-          /*sme_CloseSession(VOS_GET_HAL_CB(btampContext->pvosGCtx),
+          /*sme_CloseSession(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx),
                                          btampContext->sessionId);*/
           /*Advance outer statevar */
           btampfsmChangeToState(instanceVar,DISCONNECTED);

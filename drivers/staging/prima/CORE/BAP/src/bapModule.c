@@ -564,12 +564,12 @@ WLANBAP_ReleaseHndl
   /* JEZ081001: TODO: Major: */ 
   /* Check to see if any wireless associations are still active */
   /* ...if so, I have to call 
-   * sme_RoamDisconnect(VOS_GET_HAL_CB(btampHandle->pvosGCtx), 
+   * sme_RoamDisconnect(VOS_GET_HAL_CB_BAP(btampHandle->pvosGCtx), 
    *        btampHandle->sessionId, 
    *       eCSR_DISCONNECT_REASON_UNSPECIFIED); 
    * on all of them  */ 
 
-  halHandle = VOS_GET_HAL_CB(btampContext->pvosGCtx);
+  halHandle = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
   if(NULL == halHandle)
   {
      VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,

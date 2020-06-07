@@ -156,7 +156,7 @@ WLAN_BAPReset
     }
 
     /* Perform a "reset" */ 
-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
+    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
     if (NULL == hHal) 
     {
         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,

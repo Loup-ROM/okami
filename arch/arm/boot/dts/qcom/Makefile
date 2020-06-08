@@ -224,7 +224,18 @@ dtb-$(CONFIG_ARCH_MSM8920) += msm8920-pmi8937-cdp.dtb \
 	msm8920-pmi8940-qrd-sku7.dtb \
 	msm8920-pmi8950-ext-codec-cdp.dtb
 
-dtb-$(CONFIG_ARCH_MSM8940) += msm8940-pmi8950-qrd-sku7-full.dtb
+
+
+# Treble support
+ifeq ($(CONFIG_ARCH_MSM8940),y)
+	dtb-$(CONFIG_ARCH_MSM8940) += santoni.dtb
+
+ifeq ($(CONFIG_TREBLE),y)
+	dtb-$(CONFIG_TREBLE) +=	santoni-treble.dtb
+endif
+
+endif
+
 #	msm8940-pmi8937-cdp.dtb \
 	msm8940-pmi8937-mtp.dtb \
 	msm8940-pmi8950-cdp.dtb \

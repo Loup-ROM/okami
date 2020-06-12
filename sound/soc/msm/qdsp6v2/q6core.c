@@ -278,7 +278,7 @@ void ocm_core_open(void)
 					aprv2_core_fn_q, 0xFFFFFFFF, NULL);
 	pr_debug("%s: Open_q %pK\n", __func__, q6core_lcl.core_handle_q);
 	if (q6core_lcl.core_handle_q == NULL)
-		pr_err_ratelimited("%s: Unable to register CORE\n", __func__);
+		pr_err("%s: Unable to register CORE\n", __func__);
 }
 
 struct cal_block_data *cal_utils_get_cal_block_by_key(
@@ -365,8 +365,6 @@ int q6core_get_avcs_fwk_ver_info(uint32_t service_id,
 				 struct avcs_fwk_ver_info *ver_info)
 {
 	int ret;
-	unsigned long timeout;
-	bool adsp_ready = false;
 
 	mutex_lock(&(q6core_lcl.ver_lock));
 	pr_debug("%s: q6core_avcs_ver_info.status(%d)\n",
@@ -380,26 +378,13 @@ int q6core_get_avcs_fwk_ver_info(uint32_t service_id,
 		ret = -ENOSYS;
 		break;
 	case VER_QUERY_UNATTEMPTED:
-		if (!q6core_is_adsp_ready()) {
-			pr_debug("ADSP isn't ready retry\n");
-			timeout = jiffies +
-				  msecs_to_jiffies(2 * Q6_READY_TIMEOUT_MS);
-			while (!time_after(jiffies, timeout)) {
-				if (!q6core_is_adsp_ready()) {
-					pr_debug("%s: ADSP is not ready to query version\n",
-						 __func__);
-				} else {
-					adsp_ready = true;
-					break;
-				}
-			}
-		} else {
-			adsp_ready = true;
-		}
-		if (adsp_ready == true)
+		if (q6core_is_adsp_ready()) {
 			ret = q6core_send_get_avcs_fwk_ver_cmd();
-		else
+		} else {
+			pr_err("%s: ADSP is not ready to query version\n",
+				 __func__);
 			ret = -ENODEV;
+		}
 		break;
 	default:
 		pr_err("%s: Invalid version query status %d\n",
@@ -511,7 +496,6 @@ int core_get_adsp_ver(void)
 	get_aver_cmd.hdr.token = 0;
 	get_aver_cmd.hdr.opcode = AVCS_GET_VERSIONS;
 
-	q6core_lcl.cmd_resp_received_flag &= ~(FLAG_AVCS_GET_VERSIONS_RESULT);
 	ret = apr_send_pkt(q6core_lcl.core_handle_q,
 				 (uint32_t *) &get_aver_cmd);
 	if (ret < 0) {
@@ -521,6 +505,7 @@ int core_get_adsp_ver(void)
 		goto fail_cmd;
 	}
 
+	q6core_lcl.cmd_resp_received_flag &= ~(FLAG_AVCS_GET_VERSIONS_RESULT);
 	mutex_unlock(&(q6core_lcl.cmd_lock));
 	ret = wait_event_timeout(q6core_lcl.cmd_req_wait,
 			(q6core_lcl.cmd_resp_received_flag ==
@@ -575,7 +560,7 @@ int32_t core_get_license_status(uint32_t module_id)
 	get_lvr_cmd.hdr.opcode = AVCS_CMD_GET_LICENSE_VALIDATION_RESULT;
 	get_lvr_cmd.id = module_id;
 
-	q6core_lcl.cmd_resp_received_flag &= ~(FLAG_CMDRSP_LICENSE_RESULT);
+
 	ret = apr_send_pkt(q6core_lcl.core_handle_q, (uint32_t *) &get_lvr_cmd);
 	if (ret < 0) {
 		pr_err("%s: license_validation request failed, err %d\n",
@@ -584,6 +569,7 @@ int32_t core_get_license_status(uint32_t module_id)
 		goto fail_cmd;
 	}
 
+	q6core_lcl.cmd_resp_received_flag &= ~(FLAG_CMDRSP_LICENSE_RESULT);
 	mutex_unlock(&(q6core_lcl.cmd_lock));
 	ret = wait_event_timeout(q6core_lcl.cmd_req_wait,
 			(q6core_lcl.cmd_resp_received_flag ==
@@ -636,12 +622,6 @@ uint32_t core_set_dolby_manufacturer_id(int manufacturer_id)
 	return rc;
 }
 
-/*
- * q6core_is_adsp_ready - get adsp state
- *
- * Return:  true on adsp state is up or false.
- */
-
 bool q6core_is_adsp_ready(void)
 {
 	int rc;
@@ -659,7 +639,7 @@ bool q6core_is_adsp_ready(void)
 	q6core_lcl.bus_bw_resp_received = 0;
 	rc = apr_send_pkt(q6core_lcl.core_handle_q, (uint32_t *)&hdr);
 	if (rc < 0) {
-		pr_err_ratelimited("%s: Get ADSP state APR packet send event %d\n",
+		pr_err("%s: Get ADSP state APR packet send event %d\n",
 			__func__, rc);
 		goto bail;
 	}
@@ -676,7 +656,7 @@ bail:
 	pr_debug("%s: leave, rc %d, adsp ready %d\n", __func__, rc, ret);
 	return ret;
 }
-EXPORT_SYMBOL(q6core_is_adsp_ready);
+
 
 static int q6core_map_memory_regions(phys_addr_t *buf_add, uint32_t mempool_id,
 			uint32_t *bufsz, uint32_t bufcnt, uint32_t *map_handle)

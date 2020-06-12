@@ -465,12 +465,13 @@ static void q6asm_session_free(struct audio_client *ac)
 	struct list_head		*ptr, *next;
 	struct asm_no_wait_node		*node;
 	unsigned long			flags;
+	unsigned long			session_flags;
 	int session_id;
 
 	pr_debug("%s: sessionid[%d]\n", __func__, ac->session);
 	session_id = ac->session;
 	rtac_remove_popp_from_adm_devices(ac->session);
-	spin_lock_irqsave(&(session[session_id].session_lock), flags);
+	spin_lock_irqsave(&(session[session_id].session_lock), session_flags);
 	session[ac->session].ac = NULL;
 	ac->session = 0;
 	ac->perf_mode = LEGACY_PCM_MODE;
@@ -478,16 +479,17 @@ static void q6asm_session_free(struct audio_client *ac)
 	ac->cb = NULL;
 	ac->priv = NULL;
 
-	spin_lock(&ac->no_wait_que_spinlock);
+	spin_lock_irqsave(&ac->no_wait_que_spinlock, flags);
 	list_for_each_safe(ptr, next, &ac->no_wait_que) {
 		node = list_entry(ptr, struct asm_no_wait_node, list);
 		list_del(&node->list);
 		kfree(node);
 	}
-	spin_unlock(&ac->no_wait_que_spinlock);
+	spin_unlock_irqrestore(&ac->no_wait_que_spinlock, flags);
 
 	kfree(ac);
-	spin_unlock_irqrestore(&(session[session_id].session_lock), flags);
+	spin_unlock_irqrestore(&(session[session_id].session_lock),
+			       session_flags);
 	return;
 }
 
@@ -3377,7 +3379,7 @@ int q6asm_open_shared_io(struct audio_client *ac,
 
 	if (config->channels > PCM_FORMAT_MAX_NUM_CHANNEL) {
 		pr_err("%s: Invalid channel count %d\n", __func__,
-			config->channels);
+		       config->channels);
 		return -EINVAL;
 	}
 
@@ -3848,7 +3850,7 @@ int q6asm_set_encdec_chan_map(struct audio_client *ac,
 
 	if (num_channels > MAX_CHAN_MAP_CHANNELS) {
 		pr_err("%s: Invalid channel count %d\n", __func__,
-				num_channels);
+			num_channels);
 		return -EINVAL;
 	}
 
@@ -4283,6 +4285,7 @@ int q6asm_enc_cfg_blk_pcm_native(struct audio_client *ac,
 	struct asm_multi_channel_pcm_enc_cfg_v2  enc_cfg;
 	u8 *channel_mapping;
 	u32 frames_per_buf = 0;
+
 	int rc = 0;
 
 	if (channels > PCM_FORMAT_MAX_NUM_CHANNEL) {

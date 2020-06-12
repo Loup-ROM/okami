@@ -1572,8 +1572,7 @@ static int32_t adm_callback(struct apr_client_data *data, void *priv)
 			idx = ADM_GET_PARAMETER_LENGTH * copp_idx;
 			if ((payload[0] == 0) && (data->payload_size >
 				(4 * sizeof(*payload))) &&
-				(data->payload_size -
-				(4 * sizeof(*payload)) >=
+				(data->payload_size - 4 >=
 				payload[3]) &&
 				(ARRAY_SIZE(adm_get_parameters) >
 				idx) &&
@@ -1614,12 +1613,9 @@ static int32_t adm_callback(struct apr_client_data *data, void *priv)
 				pr_err(":err = 0x%x\n", payload[0]);
 			} else if (data->payload_size >=
 				   (2 * sizeof(uint32_t))) {
-				if ((payload[1] >
+				if (payload[1] >
 					   ((ADM_GET_TOPO_MODULE_LIST_LENGTH /
-					   sizeof(uint32_t)) - 1))  ||
-				((data->payload_size -
-				(2 *  sizeof(uint32_t))) <
-				(payload[1] * sizeof(uint32_t))))  {
+					   sizeof(uint32_t)) - 1)) {
 					pr_err("%s: ADM_CMDRSP_GET_PP_TOPO_MODULE_LIST",
 						 __func__);
 					pr_err(":size = %d\n", payload[1]);
@@ -1680,7 +1676,7 @@ static int adm_memory_map_regions(phys_addr_t *buf_add, uint32_t mempool_id,
 						0xFFFFFFFF, &this_adm);
 		if (this_adm.apr == NULL) {
 			pr_err("%s: Unable to register ADM\n", __func__);
-			ret = -ENETRESET;
+			ret = -ENODEV;
 			return ret;
 		}
 		rtac_set_adm_handle(this_adm.apr);

@@ -26,7 +26,7 @@
 #include <linux/hrtimer.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/delay.h>
-
+#include <linux/pm_qos.h>
 #define DUTY_CLCLE 50
 #define ADJUST_NUM 15
 #define JUSTTIMES 6

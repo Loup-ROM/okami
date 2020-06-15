@@ -44,6 +44,13 @@ config MSMB_CAMERA_DEBUG
 	---help---
 	  Enable printk() debug for msm camera 2.0
 
+config SANTONI_CAMERA
+	bool "QTI MSM camera 2.0 addons for Redmi 4X (santoni)"
+	depends on MSMB_CAMERA
+	default n
+	--help--
+	Say Y here to add support for santoni's camera modules.
+
 menuconfig MSMB_CAMERA_NOUGAT
         bool "QTI MSM camera and video capture 2.0 support for Nougat"
         depends on ARCH_MSM && VIDEO_V4L2 && I2C

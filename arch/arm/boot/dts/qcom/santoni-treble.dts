@@ -6410,7 +6410,7 @@
 			phandle = <0x180>;
 		};
 
-		qcom,cpu-clock-8939@b111050 {
+		clock_cpu: qcom,cpu-clock-8939@b111050 {
 			compatible = "qcom,cpu-clock-8939";
 			reg = <0xb011050 0x8 0xb111050 0x8 0xb1d1050 0x8 0xa412c 0x8>;
 			reg-names = "apcs-c1-rcg-base", "apcs-c0-rcg-base", "apcs-cci-rcg-base", "efuse";
@@ -6433,7 +6433,7 @@
 			phandle = <0x9e>;
 		};
 
-		qcom,msm-cpufreq {
+		msm_cpufreq: qcom,msm-cpufreq {
 			compatible = "qcom,msm-cpufreq";
 			clock-names = "l2_clk", "cpu0_clk", "cpu1_clk", "cpu2_clk", "cpu3_clk", "cpu4_clk", "cpu5_clk", "cpu6_clk", "cpu7_clk";
 			clocks = <0x9e 0x96854074 0x9e 0xcf28e63a 0x9e 0xcf28e63a 0x9e 0xcf28e63a 0x9e 0xcf28e63a 0x9e 0xc69f0878 0x9e 0xc69f0878 0x9e 0xc69f0878 0x9e 0xc69f0878>;
@@ -7777,7 +7777,7 @@
 				#address-cells = <0x1>;
 				#size-cells = <0x1>;
 
-				spm-regulator@2000 {
+				pm8937_s5: spm-regulator@2000 {
 					compatible = "qcom,spm-regulator";
 					reg = <0x2000 0x100>;
 					qcom,mode = "pwm";
@@ -8880,7 +8880,7 @@
 			phandle = <0x121>;
 		};
 
-		regulator@b018000 {
+		apc_vreg_corner: regulator@b018000 {
 			compatible = "qcom,cpr-regulator";
 			reg = <0xb018000 0x1000 0xb011064 0x4 0xa4000 0x1000>;
 			reg-names = "rbcpr", "rbcpr_clk", "efuse_addr";
@@ -11816,3 +11816,5 @@
 		};
 	};
 };
+
+#include "okami-freq.dtsi"

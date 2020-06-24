@@ -1,0 +1,23 @@
+From 3d905e9cb0ffa63dfd3ce00ac8c609286e8b1a77 Mon Sep 17 00:00:00 2001
+From: bitrvmpd <e.noyer.silva@gmail.com>
+Date: Fri, 5 Jun 2020 11:33:42 -0500
+Subject: [PATCH] :sparkles: Added Prima/Pronto to staging makefile
+
+---
+ drivers/staging/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index 53503056d747..734d4f0cdee0 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -45,3 +45,6 @@ obj-$(CONFIG_MTD_SPINAND_MT29F)	+= mt29f_spinand/
+ obj-$(CONFIG_GS_FPGABOOT)	+= gs_fpgaboot/
+ obj-$(CONFIG_CRYPTO_SKEIN)	+= skein/
+ obj-$(CONFIG_UNISYSSPAR)	+= unisys/
++obj-$(CONFIG_PRIMA_WLAN)        += prima/
++obj-$(CONFIG_PRONTO_WLAN)       += prima/
++
+-- 
+2.25.1
+

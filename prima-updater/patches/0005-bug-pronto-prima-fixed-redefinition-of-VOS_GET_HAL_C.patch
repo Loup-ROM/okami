@@ -1,0 +1,215 @@
+From 4745a890ecf99b9293503ad3cdc1117c006629ef Mon Sep 17 00:00:00 2001
+From: bitrvmpd <e.noyer.silva@gmail.com>
+Date: Sun, 7 Jun 2020 12:05:30 -0500
+Subject: [PATCH] :bug: pronto/prima fixed redefinition of VOS_GET_HAL_CB ->
+ VOS_GET_HAL_CB_BAP
+
+---
+ .../staging/prima-latest/CORE/BAP/src/bapApiExt.c    |  2 +-
+ .../staging/prima-latest/CORE/BAP/src/bapApiExt.h    |  2 +-
+ .../staging/prima-latest/CORE/BAP/src/bapApiHCBB.c   |  2 +-
+ .../staging/prima-latest/CORE/BAP/src/bapApiStatus.c |  2 +-
+ .../staging/prima-latest/CORE/BAP/src/bapInternal.h  |  2 +-
+ .../staging/prima-latest/CORE/BAP/src/bapModule.c    |  4 ++--
+ drivers/staging/prima-latest/CORE/BAP/src/btampFsm.c | 24 +++++++++----------
+ 7 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/staging/prima-latest/CORE/BAP/src/bapApiExt.c b/drivers/staging/prima-latest/CORE/BAP/src/bapApiExt.c
+index b0d2ea57d7d7..e0c0076a92c2 100644
+--- a/drivers/staging/prima-latest/CORE/BAP/src/bapApiExt.c
++++ b/drivers/staging/prima-latest/CORE/BAP/src/bapApiExt.c
+@@ -156,7 +156,7 @@ WLANBAP_GetCurrentChannel
+     return VOS_STATUS_E_FAULT;
+   }
+ 
+-  halHandle =  VOS_GET_HAL_CB(pBtampCtx->pvosGCtx);
++  halHandle =  VOS_GET_HAL_CB_BAP(pBtampCtx->pvosGCtx);
+ 
+   if(NULL == halHandle)
+   {
+diff --git a/drivers/staging/prima-latest/CORE/BAP/src/bapApiExt.h b/drivers/staging/prima-latest/CORE/BAP/src/bapApiExt.h
+index 6293e6519f0f..943ef10695a8 100644
+--- a/drivers/staging/prima-latest/CORE/BAP/src/bapApiExt.h
++++ b/drivers/staging/prima-latest/CORE/BAP/src/bapApiExt.h
+@@ -100,7 +100,7 @@ when        who    what, where, why
+ // How do I get BAP context from voss context? 
+ //#define VOS_GET_BAP_CB(ctx) vos_get_context( VOS_MODULE_ID_BAP, ctx) 
+ // How do I get halHandle from voss context? 
+-//#define VOS_GET_HAL_CB(ctx) vos_get_context( VOS_MODULE_ID_HAL, ctx) 
++//#define VOS_GET_HAL_CB_BAP(ctx) vos_get_context( VOS_MODULE_ID_HAL, ctx) 
+ 
+ /*----------------------------------------------------------------------------
+  *  Typedefs
+diff --git a/drivers/staging/prima-latest/CORE/BAP/src/bapApiHCBB.c b/drivers/staging/prima-latest/CORE/BAP/src/bapApiHCBB.c
+index 58c14687f888..d04173a1a639 100644
+--- a/drivers/staging/prima-latest/CORE/BAP/src/bapApiHCBB.c
++++ b/drivers/staging/prima-latest/CORE/BAP/src/bapApiHCBB.c
+@@ -156,7 +156,7 @@ WLAN_BAPReset
+     }
+ 
+     /* Perform a "reset" */ 
+-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
++    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
+     if (NULL == hHal) 
+     {
+         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
+diff --git a/drivers/staging/prima-latest/CORE/BAP/src/bapApiStatus.c b/drivers/staging/prima-latest/CORE/BAP/src/bapApiStatus.c
+index 16b96fbd8ed0..4fe0195cbc33 100644
+--- a/drivers/staging/prima-latest/CORE/BAP/src/bapApiStatus.c
++++ b/drivers/staging/prima-latest/CORE/BAP/src/bapApiStatus.c
+@@ -556,7 +556,7 @@ WLAN_BAPReadLocalAMPAssoc
+ 
+         return VOS_STATUS_E_FAULT;
+     }
+-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
++    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
+     if (NULL == hHal) 
+     {
+         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
+diff --git a/drivers/staging/prima-latest/CORE/BAP/src/bapInternal.h b/drivers/staging/prima-latest/CORE/BAP/src/bapInternal.h
+index 31b673464c76..6bd1a38ad9e4 100644
+--- a/drivers/staging/prima-latest/CORE/BAP/src/bapInternal.h
++++ b/drivers/staging/prima-latest/CORE/BAP/src/bapInternal.h
+@@ -114,7 +114,7 @@ when        who    what, where, why
+ // How do I get BAP context from voss context? 
+ #define VOS_GET_BAP_CB(ctx) vos_get_context( VOS_MODULE_ID_BAP, ctx) 
+ // How do I get halHandle from voss context? 
+-#define VOS_GET_HAL_CB(ctx) vos_get_context( VOS_MODULE_ID_SME, ctx) 
++#define VOS_GET_HAL_CB_BAP(ctx) vos_get_context( VOS_MODULE_ID_SME, ctx) 
+ 
+ // Default timeout values (in BR/EDR baseband slots)
+ // Physical Link Connection Accept Timer interval (0x1FA0 * 0.625 = 5.06 sec)
+diff --git a/drivers/staging/prima-latest/CORE/BAP/src/bapModule.c b/drivers/staging/prima-latest/CORE/BAP/src/bapModule.c
+index dd0ab7e18150..617c494c06b0 100644
+--- a/drivers/staging/prima-latest/CORE/BAP/src/bapModule.c
++++ b/drivers/staging/prima-latest/CORE/BAP/src/bapModule.c
+@@ -564,12 +564,12 @@ WLANBAP_ReleaseHndl
+   /* JEZ081001: TODO: Major: */ 
+   /* Check to see if any wireless associations are still active */
+   /* ...if so, I have to call 
+-   * sme_RoamDisconnect(VOS_GET_HAL_CB(btampHandle->pvosGCtx), 
++   * sme_RoamDisconnect(VOS_GET_HAL_CB_BAP(btampHandle->pvosGCtx), 
+    *        btampHandle->sessionId, 
+    *       eCSR_DISCONNECT_REASON_UNSPECIFIED); 
+    * on all of them  */ 
+ 
+-  halHandle = VOS_GET_HAL_CB(btampContext->pvosGCtx);
++  halHandle = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
+   if(NULL == halHandle)
+   {
+      VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
+diff --git a/drivers/staging/prima-latest/CORE/BAP/src/btampFsm.c b/drivers/staging/prima-latest/CORE/BAP/src/btampFsm.c
+index c7d82281fb97..1e12b7a048c8 100644
+--- a/drivers/staging/prima-latest/CORE/BAP/src/btampFsm.c
++++ b/drivers/staging/prima-latest/CORE/BAP/src/btampFsm.c
+@@ -182,7 +182,7 @@ bapSetKey( v_PVOID_t pvosGCtx, tCsrRoamSetKey *pSetKeyInfo )
+     {
+       return VOS_STATUS_E_FAULT;
+     }
+-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
++    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
+     if (NULL == hHal) 
+     {
+         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
+@@ -452,7 +452,7 @@ convertToCsrProfile
+         return VOS_STATUS_E_FAULT;
+     }
+ 
+-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
++    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
+     if (NULL == hHal) 
+     {
+         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
+@@ -772,7 +772,7 @@ gotoStarting
+         return VOS_STATUS_E_FAULT;
+     }
+ 
+-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
++    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
+     if (NULL == hHal) 
+     {
+         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
+@@ -968,7 +968,7 @@ gotoStarting
+         return VOS_STATUS_E_INVAL;
+     }
+ #if 0
+-    halStatus = sme_RoamConnect(VOS_GET_HAL_CB(btampContext->pvosGCtx), 
++    halStatus = sme_RoamConnect(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx), 
+             &btampContext->csrRoamProfile, 
+             NULL,   /* tScanResultHandle hBssListIn, */ 
+             &btampContext->csrRoamId);
+@@ -1533,7 +1533,7 @@ validAssocInd
+ )
+ {
+     /* tHalHandle */    
+-    tHalHandle hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
++    tHalHandle hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
+     v_U32_t ieLen; 
+   
+     /* For now, always return true */ 
+@@ -1702,7 +1702,7 @@ btampFsm
+     }
+     instanceVar = &(btampContext->bapPhysLinkMachine);
+ 
+-    hHal = VOS_GET_HAL_CB(btampContext->pvosGCtx);
++    hHal = VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx);
+     if (NULL == hHal) 
+     {
+         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
+@@ -1732,7 +1732,7 @@ btampFsm
+          /* TODO : Need to have better handling */ 
+           if(btampContext->isBapSessionOpen == TRUE)//We want to close only BT-AMP Session
+           {
+-          sme_CloseSession(VOS_GET_HAL_CB(btampContext->pvosGCtx),
++          sme_CloseSession(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx),
+                                          btampContext->sessionId);
+           /*Added by Luiza:*/
+           btampContext->isBapSessionOpen = FALSE; 
+@@ -1753,7 +1753,7 @@ btampFsm
+ #if 0
+           if(btampContext->isBapSessionOpen == TRUE)
+           {
+-          sme_CloseSession(VOS_GET_HAL_CB(btampContext->pvosGCtx),
++          sme_CloseSession(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx),
+                                          btampContext->sessionId);
+           /*Added by Luiza:*/
+           btampContext->isBapSessionOpen = FALSE; 
+@@ -2158,7 +2158,7 @@ btampFsm
+           //sme_RoamSetContext(); 
+ #if 0
+           sme_RoamSetKey(
+-                  VOS_GET_HAL_CB(btampContext->pvosGCtx), 
++                  VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx), 
+                   btampContext->sessionId, 
+                   tSirMacAddr peerBssId, 
+                   eCsrEncryptionType encryptType,
+@@ -2180,7 +2180,7 @@ btampFsm
+           //sme_RoamSetContext(); 
+ #if 0
+           sme_RoamSetKey(
+-                  VOS_GET_HAL_CB(btampContext->pvosGCtx), 
++                  VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx), 
+                   btampContext->sessionId, 
+                   tSirMacAddr peerBssId, 
+                   eCsrEncryptionType encryptType,
+@@ -2376,7 +2376,7 @@ btampFsm
+               ( btampContext, 
+                 WLANBAP_STATUS_SUCCESS,
+                 btampContext->gDiscReason);
+-          /*sme_CloseSession(VOS_GET_HAL_CB(btampContext->pvosGCtx),
++          /*sme_CloseSession(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx),
+                                          btampContext->sessionId);*/
+           /*Action code for transition */
+           gotoDisconnected(btampContext);
+@@ -2426,7 +2426,7 @@ btampFsm
+          // signalHCIPhysLinkCompEvent(btampContext, WLANBAP_ERROR_NO_CNCT/*btampContext->gPhysLinkStatus*/);
+           signalHCIPhysLinkCompEvent(btampContext, btampContext->gPhysLinkStatus);
+           gotoDisconnected(btampContext);
+-          /*sme_CloseSession(VOS_GET_HAL_CB(btampContext->pvosGCtx),
++          /*sme_CloseSession(VOS_GET_HAL_CB_BAP(btampContext->pvosGCtx),
+                                          btampContext->sessionId);*/
+           /*Advance outer statevar */
+           btampfsmChangeToState(instanceVar,DISCONNECTED);
+-- 
+2.25.1
+

@@ -104,8 +104,8 @@ start=$SECONDS
 # different optimization level. 
 # To see how it works, check the Makefile ... file, 
 # line 625 to 628, located in the root dir of this kernel.
-KBUILD_LOUP_CFLAGS="-Wno-misleading-indentation -Wno-bool-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2" 
-KBUILD_LOUP_CFLAGS=$KBUILD_LOUP_CFLAGS ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j5
+KBUILD_OKAMI_CFLAGS="-Wno-misleading-indentation -Wno-bool-compare -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
+KBUILD_OKAMI_CFLAGS="$KBUILD_OKAMI_CFLAGS" ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE=$CROSS_COMPILE $MAKE_STATEMENT -j5
 
 if [ $? -eq 0 ]
 then

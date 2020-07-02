@@ -1,0 +1,26 @@
+From f75de7b20b90083a7f7c09a812070fd005f43f02 Mon Sep 17 00:00:00 2001
+From: bitrvmpd <e.noyer.silva@gmail.com>
+Date: Fri, 5 Jun 2020 11:43:19 -0500
+Subject: [PATCH] :bug: Added missing Kconfig flag QCOM_TDLS
+
+Fixes standalone compilation
+---
+ drivers/staging/prima/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/staging/prima-latest/Kconfig b/drivers/staging/prima-latest/Kconfig
+index 9306175a2290..63894afc14e4 100644
+--- a/drivers/staging/prima-latest/Kconfig
++++ b/drivers/staging/prima-latest/Kconfig
+@@ -53,4 +53,8 @@ config WLAN_OFFLOAD_PACKETS
+ 	bool "Enable offload packets feature"
+ 	default n
+ 
++config QCOM_TDLS
++	bool "Enable TDLS"
++	default n
++
+ endif # PRIMA_WLAN || PRONTO_WLAN
+-- 
+2.25.1
+

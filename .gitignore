@@ -105,3 +105,6 @@ ipa_common
 
 # out dir
 out/
+
+# rejected patches
+*.rej

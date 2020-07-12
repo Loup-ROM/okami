@@ -25,6 +25,17 @@ start=$SECONDS
 # line 625 to 628, located in the root dir of this kernel.
 KBUILD_OKAMI_CFLAGS="-mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
 
+# Kernel Configuration
+# ====================
+if [ -f "out/.config" ]
+  then    
+    echo -e "\033[0;32m> Config file already exists\033[0;0m\n"
+  else
+    echo -e "\033[0;31m> Config file not found, copying santoni_defconfig as .config...\033[0;0m\n" 
+    cp arch/arm64/configs/santoni_defconfig out/.config
+fi
+echo -e "> Opening .config file...\n"
+
 make menuconfig O=out ARCH=arm64
 PATH="/home/wuff/projects/misc/proprietary_vendor_qcom_sdclang-8.0_linux-x86/bin:/home/wuff/projects/misc/aarch64_linux_gnu-gcc/bin:/home/wuff/projects/misc/arm_linux_gnueabi-gcc/bin:${PATH}" \
 make -j8 O=out \

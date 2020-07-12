@@ -23,10 +23,10 @@ start=$SECONDS
 # different optimization level. 
 # To see how it works, check the Makefile ... file, 
 # line 625 to 628, located in the root dir of this kernel.
-KBUILD_OKAMI_CFLAGS="-Wno-misleading-indentation -mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
+KBUILD_OKAMI_CFLAGS="-mtune=cortex-a53 -march=armv8-a+crc+simd+crypto -mcpu=cortex-a53 -O2"
 
-make O=out ARCH=arm64 santoni_defconfig
-PATH="/home/wuff/projects/misc/aarch64_linux_gnu-gcc/bin:/home/wuff/projects/misc/aarch64_linux_gnu-gcc/bin:/home/wuff/projects/misc/arm_linux_gnueabi-gcc/bin:${PATH}" \
+make menuconfig O=out ARCH=arm64
+PATH="/home/wuff/projects/misc/proprietary_vendor_qcom_sdclang-8.0_linux-x86/bin:/home/wuff/projects/misc/aarch64_linux_gnu-gcc/bin:/home/wuff/projects/misc/arm_linux_gnueabi-gcc/bin:${PATH}" \
 make -j8 O=out \
 	ARCH=arm64 \
 	SUBARCH=arm64 \

@@ -1,0 +1,166 @@
+From 4bbe36098cdeb1377a366f99d5c0ef0ffcf6f119 Mon Sep 17 00:00:00 2001
+From: Gabriele M <moto.falcon.git@gmail.com>
+Date: Tue, 18 Aug 2015 23:49:13 +0200
+Subject: [PATCH] staging: prima: Fix non-debug build and switch to it
+
+Enable the forward declaration of debug functions in non-debug
+builds and disable a piece of code used only to print some info.
+-Wno-unused-variable is now required because of all the variables
+used in debug functions that aren't left out in non-debug builds.
+
+Change-Id: I7069f8859e4965ee82ce65c29c35349c887fd673
+Signed-off-by: Albert I <kras@raphielgang.org>
+---
+ drivers/staging/prima-latest/CORE/HDD/src/wlan_hdd_wext.c      | 2 ++
+ drivers/staging/prima-latest/CORE/MAC/inc/macTrace.h           | 5 -----
+ drivers/staging/prima-latest/CORE/MAC/src/pe/lim/limApi.c      | 2 +-
+ drivers/staging/prima-latest/CORE/SME/inc/smsDebug.h           | 5 +++++
+ drivers/staging/prima-latest/CORE/SME/src/sme_common/sme_Api.c | 6 ++++--
+ drivers/staging/prima-latest/CORE/VOSS/inc/vos_trace.h         | 1 +
+ drivers/staging/prima-latest/Kbuild                            | 4 ++--
+ 7 files changed, 15 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/staging/prima-latest/CORE/HDD/src/wlan_hdd_wext.c b/drivers/staging/prima-latest/CORE/HDD/src/wlan_hdd_wext.c
+index 1bb4e182d3c9..ce81b55d10d8 100644
+--- a/drivers/staging/prima-latest/CORE/HDD/src/wlan_hdd_wext.c
++++ b/drivers/staging/prima-latest/CORE/HDD/src/wlan_hdd_wext.c
+@@ -6994,6 +6994,7 @@ static int __iw_get_char_setnone(struct net_device *dev,
+    *And currently it only checks P2P_CLIENT adapter.
+    *P2P_DEVICE and P2P_GO have not been added as of now.
+ */
++#ifdef TRACE_RECORD
+         case WE_GET_STATES:
+         {
+             int buf = 0, len = 0;
+@@ -7130,6 +7131,7 @@ static int __iw_get_char_setnone(struct net_device *dev,
+             wrqu->data.length = strlen(extra)+1;
+             break;
+         }
++#endif
+ 
+         case WE_GET_CFG:
+         {
+diff --git a/drivers/staging/prima-latest/CORE/MAC/inc/macTrace.h b/drivers/staging/prima-latest/CORE/MAC/inc/macTrace.h
+index 2ee4c7fc02cb..a1c99d31a14c 100644
+--- a/drivers/staging/prima-latest/CORE/MAC/inc/macTrace.h
++++ b/drivers/staging/prima-latest/CORE/MAC/inc/macTrace.h
+@@ -43,9 +43,6 @@
+ 
+ #include "aniGlobal.h"
+ 
+-
+-#ifdef TRACE_RECORD
+-
+ #define MAC_TRACE_GET_MODULE_ID(data) ((data >> 8) & 0xff)
+ #define MAC_TRACE_GET_MSG_ID(data)       (data & 0xffff)
+ 
+@@ -80,5 +77,3 @@ tANI_U8* macTraceGetTLState(tANI_U16 tlState);
+ 
+ #endif
+ 
+-#endif
+-
+diff --git a/drivers/staging/prima-latest/CORE/MAC/src/pe/lim/limApi.c b/drivers/staging/prima-latest/CORE/MAC/src/pe/lim/limApi.c
+index 988eec33f676..7774476e28e9 100644
+--- a/drivers/staging/prima-latest/CORE/MAC/src/pe/lim/limApi.c
++++ b/drivers/staging/prima-latest/CORE/MAC/src/pe/lim/limApi.c
+@@ -1086,8 +1086,8 @@ tSirRetStatus peOpen(tpAniSirGlobal pMac, tMacOpenParameters *pMacOpenParam)
+      */
+ #ifdef LIM_TRACE_RECORD
+     MTRACE(limTraceInit(pMac));
+-#endif
+     lim_register_debug_callback();
++#endif
+     return eSIR_SUCCESS;
+ }
+ 
+diff --git a/drivers/staging/prima-latest/CORE/SME/inc/smsDebug.h b/drivers/staging/prima-latest/CORE/SME/inc/smsDebug.h
+index ec5ae58af8df..85d495b12c16 100644
+--- a/drivers/staging/prima-latest/CORE/SME/inc/smsDebug.h
++++ b/drivers/staging/prima-latest/CORE/SME/inc/smsDebug.h
+@@ -45,10 +45,15 @@
+ #define __printf(a,b)
+ #endif
+ 
++#ifdef WLAN_DEBUG
+ void __printf(3,4)
+ smsLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString, ...);
+ 
+ void __printf(3,4)
+ pmcLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString, ...);
++#else
++#define smsLog(arg...)
++#define pmcLog(arg...)
++#endif
+ 
+ #endif // __SMS_DEBUG_H__
+diff --git a/drivers/staging/prima-latest/CORE/SME/src/sme_common/sme_Api.c b/drivers/staging/prima-latest/CORE/SME/src/sme_common/sme_Api.c
+index 6b75a27b2a22..12dbbbbea78d 100644
+--- a/drivers/staging/prima-latest/CORE/SME/src/sme_common/sme_Api.c
++++ b/drivers/staging/prima-latest/CORE/SME/src/sme_common/sme_Api.c
+@@ -1642,7 +1642,9 @@ eHalStatus sme_Open(tHalHandle hHal)
+ 
+       sme_p2pOpen(pMac);
+       smeTraceInit(pMac);
++#ifdef SME_TRACE_RECORD
+       sme_register_debug_callback();
++#endif
+ 
+    }while (0);
+ 
+@@ -7079,6 +7081,7 @@ VOS_STATUS sme_DbgWriteMemory(tHalHandle hHal, v_U32_t memAddr, v_U8_t *pBuf, v_
+ }
+ 
+ 
++#ifdef WLAN_DEBUG
+ void pmcLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString, ...)
+ {
+     VOS_TRACE_LEVEL  vosDebugLevel;
+@@ -7099,7 +7102,6 @@ void pmcLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString, ...)
+ 
+ void smsLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString,...)
+ {
+-#ifdef WLAN_DEBUG
+     // Verify against current log level
+     if ( loglevel > pMac->utils.gLogDbgLevel[LOG_INDEX_FOR_MODULE( SIR_SMS_MODULE_ID )] )
+         return;
+@@ -7113,8 +7115,8 @@ void smsLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString,...)
+ 
+         va_end( marker );              /* Reset variable arguments.      */
+     }
+-#endif
+ }
++#endif
+ 
+ /* ---------------------------------------------------------------------------
+     \fn sme_GetWcnssWlanCompiledVersion
+diff --git a/drivers/staging/prima-latest/CORE/VOSS/inc/vos_trace.h b/drivers/staging/prima-latest/CORE/VOSS/inc/vos_trace.h
+index 538f58d02258..a0d10696c967 100644
+--- a/drivers/staging/prima-latest/CORE/VOSS/inc/vos_trace.h
++++ b/drivers/staging/prima-latest/CORE/VOSS/inc/vos_trace.h
+@@ -113,6 +113,7 @@ typedef enum
+ 
+ #else
+ #define MTRACE(p) {  }
++#define CASE_RETURN_STRING( str ) { }
+ 
+ #endif
+ 
+diff --git a/drivers/staging/prima-latest/Kbuild b/drivers/staging/prima-latest/Kbuild
+index ca393da2e02a..595708990241 100644
+--- a/drivers/staging/prima-latest/Kbuild
++++ b/drivers/staging/prima-latest/Kbuild
+@@ -72,8 +72,8 @@ CONFIG_QCOM_ESE_UPLOAD := n
+ 
+ # Feature flags which are not (currently) configurable via Kconfig
+ 
+-#Whether to build debug version
+-BUILD_DEBUG_VERSION := 1
++# Whether to build debug version
++BUILD_DEBUG_VERSION := 0
+ 
+ #Enable this flag to build driver in diag version
+ BUILD_DIAG_VERSION := 1
+-- 
+2.25.1
+

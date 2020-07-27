@@ -1,0 +1,57 @@
+From 19f357659ea4d6d444e77e7daf17ab8df5ca3326 Mon Sep 17 00:00:00 2001
+From: Rajeev Kumar <rajekuma@qca.qualcomm.com>
+Date: Tue, 27 Oct 2015 11:47:44 +0530
+Subject: [PATCH] wlan: Remove WLAN_FEATURE_HOLD_RX_WAKELOCK feature
+
+- WLAN_FEATURE_HOLD_RX_WAKELOCK feature acquires 50 ms wake lock for
+  every rx data packet.
+- Remove this feature such that we can avoid wake lock for every RX
+  data packet.
+
+Change-Id: I90c8441694aac5a2df029def5f8b7f5d62eee484
+CRs-Fixed: 929621
+Signed-off-by: Albert I <kras@raphielgang.org>
+---
+ drivers/staging/prima-latest/Kbuild | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/prima-latest/Kbuild b/drivers/staging/prima-latest/Kbuild
+index 595708990241..6c3b52e4e735 100644
+--- a/drivers/staging/prima-latest/Kbuild
++++ b/drivers/staging/prima-latest/Kbuild
+@@ -58,8 +58,11 @@ ifneq ($(CONFIG_PRONTO_WLAN),)
+ #Flag to enable offload packets feature
+     CONFIG_WLAN_OFFLOAD_PACKETS := y
+ 
+-    endif
+-#Flag to enable AP Find feature
++endif
++# Flag to enable hold RX wake lock feature
++CONFIG_WLAN_FEATURE_HOLD_RX_WAKELOCK := n
++
++# Flag to enable AP Find feature
+ CONFIG_WLAN_FEATURE_AP_FIND := y
+ 
+ # Flag to enable feature Software AP Authentication Offload
+@@ -609,7 +612,6 @@ CDEFINES :=	-DANI_BUS_TYPE_PLATFORM=1 \
+ 		-DWLANTL_DEBUG\
+ 		-DWLAN_NS_OFFLOAD \
+ 		-DWLAN_ACTIVEMODE_OFFLOAD_FEATURE \
+-		-DWLAN_FEATURE_HOLD_RX_WAKELOCK \
+ 		-DWLAN_SOFTAP_VSTA_FEATURE \
+ 		-DWLAN_FEATURE_ROAM_SCAN_OFFLOAD \
+ 		-DWLAN_FEATURE_GTK_OFFLOAD \
+@@ -771,6 +773,10 @@ ifeq ($(CONFIG_MDNS_OFFLOAD_SUPPORT), y)
+ CDEFINES += -DMDNS_OFFLOAD
+ endif
+ 
++ifeq ($(CONFIG_WLAN_FEATURE_HOLD_RX_WAKELOCK),y)
++CDEFINES += -DWLAN_FEATURE_HOLD_RX_WAKELOCK
++endif
++
+ KBUILD_CPPFLAGS += $(CDEFINES)
+ 
+ # Module information used by KBuild framework
+-- 
+2.25.1
+

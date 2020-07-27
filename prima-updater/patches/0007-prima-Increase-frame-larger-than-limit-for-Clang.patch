@@ -1,0 +1,27 @@
+From c095440510f98ce3cd734715ed40f1894f0b72ce Mon Sep 17 00:00:00 2001
+From: Albert I <kras@raphielgang.org>
+Date: Sun, 2 Feb 2020 12:52:37 +0800
+Subject: [PATCH] prima: Increase frame-larger-than limit for Clang
+
+Matches 64-bit configuration.
+
+Signed-off-by: Albert I <kras@raphielgang.org>
+---
+ drivers/staging/prima-latest/Kbuild | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/prima-latest/Kbuild b/drivers/staging/prima-latest/Kbuild
+index 25bcf5250103..ca393da2e02a 100644
+--- a/drivers/staging/prima-latest/Kbuild
++++ b/drivers/staging/prima-latest/Kbuild
+@@ -761,6 +761,7 @@ endif
+ 
+ # Fix build for GCC 4.7
+ EXTRA_CFLAGS += $(call cc-option,-Wno-maybe-uninitialized) -Wno-unused-function -Wno-enum-conversion -Wno-array-bounds -Wno-pointer-bool-conversion -Wno-parentheses-equality -Wno-typedef-redefinition -Wno-empty-body -Wno-non-literal-null-conversion
++EXTRA_CFLAGS += $(call cc-option, -Wframe-larger-than=2048)
+ 
+ ifeq ($(CONFIG_WLAN_OFFLOAD_PACKETS),y)
+ CDEFINES += -DWLAN_FEATURE_OFFLOAD_PACKETS
+-- 
+2.25.1
+

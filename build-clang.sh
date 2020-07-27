@@ -37,7 +37,7 @@ fi
 echo -e "> Opening .config file...\n"
 
 make menuconfig O=out ARCH=arm64
-PATH="/home/wuff/projects/misc/proprietary_vendor_qcom_sdclang-8.0_linux-x86/bin:/home/wuff/projects/misc/aarch64_linux_gnu-gcc/bin:/home/wuff/projects/misc/arm_linux_gnueabi-gcc/bin:${PATH}" \
+PATH="/home/wuff/projects/misc/proton-clang/bin:${PATH}" \
 make -j8 O=out \
 	ARCH=arm64 \
 	SUBARCH=arm64 \
